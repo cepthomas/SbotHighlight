@@ -1,0 +1,5 @@
+{
+    // Scopes for marking text with highlights.
+    "highlight_scopes": [ "string", "constant.language", "comment", "markup.list", "variable", "invalid" ],
+    // "highlight_scopes": [ "region.redish", "region.orangish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish", "region.pinkish" ],
+}

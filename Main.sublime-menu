@@ -1,0 +1,30 @@
+[
+    // Add to existing Preferences menu for package-settings.
+    {
+        "id": "preferences",
+        "children":
+        [
+            {
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "SbotHighlight",
+                        "children":
+                        [
+                            {
+                                "caption": "Settings",
+                                "command": "edit_settings",
+                                "args":
+                                {
+                                    "base_file": "${packages}/SbotHighlight/SbotHighlight.sublime-settings",
+                                    "default": "{\n$0\n}\n"
+                                }
+                            },
+                        ]
+                    }
+                ]
+            },
+        ]
+    },
+]
