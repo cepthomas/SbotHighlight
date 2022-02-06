@@ -1,14 +1,16 @@
 # What It Is
-Word colorizing similar to [StyleToken](https://github.com/vcharnahrebel/style-token).
+Text colorizing in view with auto-persistence by document.
+[SbotScope](https://github.com/cepthomas/SbotScope) will be useful when picking the scopes for the colors you want.
+Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for Windows and ST4. Other OSes and ST versions will require some hacking.
 
 ## Commands
-| Command                  | Description |
-|:--------                 |:-------     |
-| sbot_highlight_text      | Highlight text 1 through 6 from `highlight_scopes` |
-| sbot_clear_highlight     | Remove highlight in selection |
-| sbot_clear_all_highlights| Remove all highlights |
+| Command                  | Implementation | Description |
+|:--------                 |:-------        |:-------     |
+| sbot_highlight_text      | Context        | Highlight text 1 through 6 from your `highlight_scopes` |
+| sbot_clear_highlight     | Context        | Remove highlight in selection |
+| sbot_clear_all_highlights| Context        | Remove all highlights |
 
 ## Settings
 | Setting                  | Description |
