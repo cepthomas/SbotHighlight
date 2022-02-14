@@ -87,7 +87,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, hl_index):
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
-        highlight_scopes = settings.get('`')
+        highlight_scopes = settings.get('highlight_scopes')
 
         # Get whole word or specific span.
         region = self.view.sel()[0]
