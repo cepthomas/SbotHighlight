@@ -141,30 +141,31 @@ def _get_store_fn(project_fn):
 def _save_hls(winid, project_fn):
     ''' General project saver. '''
 
-    store_fn = _get_store_fn(project_fn)
+    if project_fn is not None:
+        store_fn = _get_store_fn(project_fn)
 
-    # Remove invalid files and any empty values.
-    if winid in _hls:
-        # Safe iteration - accumulate elements to del later.
-        del_els = []
+        # Remove invalid files and any empty values.
+        if winid in _hls:
+            # Safe iteration - accumulate elements to del later.
+            del_els = []
 
-        for fn, _ in _hls[winid].items():
-            if fn is not None:
-                if not os.path.exists(fn):
-                    del_els.append((winid, fn))
-                elif len(_hls[winid][fn]) == 0:
-                    del_els.append((winid, fn))
+            for fn, _ in _hls[winid].items():
+                if fn is not None:
+                    if not os.path.exists(fn):
+                        del_els.append((winid, fn))
+                    elif len(_hls[winid][fn]) == 0:
+                        del_els.append((winid, fn))
 
-        # Now remove from collection.
-        for (w, fn) in del_els:
-            del _hls[w][fn]
+            # Now remove from collection.
+            for (w, fn) in del_els:
+                del _hls[w][fn]
 
-        # Now save, or delete if empty.
-        if len(_hls[winid]) > 0:
-            with open(store_fn, 'w') as fp:
-                json.dump(_hls[winid], fp, indent=4)
-        elif os.path.isfile(store_fn):
-            os.remove(store_fn)
+            # Now save, or delete if empty.
+            if len(_hls[winid]) > 0:
+                with open(store_fn, 'w') as fp:
+                    json.dump(_hls[winid], fp, indent=4)
+            elif os.path.isfile(store_fn):
+                os.remove(store_fn)
 
 
 #-----------------------------------------------------------------------------------
@@ -172,16 +173,18 @@ def _open_hls(winid, project_fn):
     ''' General project opener. '''
 
     global _hls
-    store_fn = _get_store_fn(project_fn)
 
-    if os.path.isfile(store_fn):
-        with open(store_fn, 'r') as fp:
-            values = json.load(fp)
-            _hls[winid] = values
-    else:
-        # Assumes new file.
-        sublime.status_message('Creating new highlights file')
-        _hls[winid] = {}
+    if project_fn is not None:
+        store_fn = _get_store_fn(project_fn)
+
+        if os.path.isfile(store_fn):
+            with open(store_fn, 'r') as fp:
+                values = json.load(fp)
+                _hls[winid] = values
+        else:
+            # Assumes new file.
+            sublime.status_message('Creating new highlights file')
+            _hls[winid] = {}
 
 
 #-----------------------------------------------------------------------------------
