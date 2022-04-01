@@ -5,6 +5,7 @@ import json
 import sublime
 import sublime_plugin
 
+#TODO make object-y
 
 # Definitions.
 HIGHLIGHT_REGION_NAME = 'highlight_%s'
@@ -20,28 +21,22 @@ _views_inited = set()
 # Where we keep the persistence.
 _store_path = None
 
-# TODO Object-ify the functions? in all projects.
 
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     # print(">>> SbotHighlight plugin_loaded()")
     global _store_path
-    _store_path = os.path.join(sublime.packages_path(), 'SbotHighlight', 'store')  # TODO put in User, see builder.
+    _store_path = os.path.join(sublime.packages_path(), 'User', 'SbotStore')
     pathlib.Path(_store_path).mkdir(parents=True, exist_ok=True)
-
-
-#-----------------------------------------------------------------------------------
-def plugin_unloaded():
-    # print("SbotHighlight plugin_unloaded()")
-    pass
 
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.ViewEventListener):
     ''' Listener for view specific events of interest. '''
 
-    def on_activated(self):
+    def on_activated(self):  # TODO this doesn't get called when file with hls opened for first time. Also other weird effects.
         ''' When focus/tab received. '''
+        # print('on_activated')
         view = self.view
         global _views_inited
         vid = view.id()
@@ -61,11 +56,13 @@ class HighlightEvent(sublime_plugin.ViewEventListener):
                 # Init the view with any persist values.
                 tokens = _get_persist_tokens(view, False)
                 if tokens is not None:
+                    # print('7777777')
                     for token, tparams in tokens.items():
                         _highlight_view(view, token, tparams['whole_word'], tparams['scope'])
 
     def on_load(self):
         ''' Called when file loaded. '''
+        # print('on_load')
         pass
 
     def on_deactivated(self):
