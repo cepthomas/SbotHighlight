@@ -20,13 +20,15 @@ _views_inited = set()
 # Where we keep the persistence.
 _store_path = None
 
+# TODO Object-ify the functions? in all projects.
 
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     # print(">>> SbotHighlight plugin_loaded()")
     global _store_path
-    _store_path = os.path.join(sublime.packages_path(), 'SbotHighlight', 'store')
+    _store_path = os.path.join(sublime.packages_path(), 'SbotHighlight', 'store')  # TODO put in User, see builder.
     pathlib.Path(_store_path).mkdir(parents=True, exist_ok=True)
+
 
 #-----------------------------------------------------------------------------------
 def plugin_unloaded():
