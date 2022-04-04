@@ -8,14 +8,14 @@ Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 Built for ST4 on Windows and Linux.
 
 ## Commands
-| Command                  | Implementation | Description |
-|:--------                 |:-------        |:-------     |
-| sbot_highlight_text      | Context        | Highlight text using `highlight_scopes` index 1 through 6 |
-| sbot_clear_highlight     | Context        | Remove highlight in selection |
-| sbot_clear_all_highlights| Context        | Remove all highlights |
+| Command                    | Implementation | Description                   | Args         |
+| :--------                  | :-------       | :-------                      | :--------    |
+| `sbot_highlight_text`      | Context        | Highlight text                | `hl_index` = index 1 through 6 |
+| `sbot_clear_highlight`     | Context        | Remove specific highlight     | `hl_index` = index 1 through 6 |
+| `sbot_clear_all_highlights`| Context        | Remove all highlights         |  |
 
 ## Settings
-| Setting                  | Description |
-|:--------                 |:-------     |
-| highlight_scopes         | List of scope names for `sbot_highlight_text` command |
+| Setting              | Description                              | Options   |
+| :--------            | :-------                                 | :------   |
+| `highlight_scopes`   | List of up to 6 scope names for commands | |
 
