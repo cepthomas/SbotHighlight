@@ -7,6 +7,7 @@ import time
 import sublime
 import sublime_plugin
 
+# TODO clear all hls in project.
 
 # Definitions.
 HIGHLIGHT_REGION_NAME = 'highlight_%s'
@@ -14,7 +15,7 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 
 
 # The current highlight collections. Key is window id which corresponds to a project.
-_hls = {}
+_hls = None
 
 # Need to track what's been initialized.
 _views_inited = set()
@@ -23,103 +24,47 @@ _views_inited = set()
 _store_path = None
 
 
-# def on_activated(self):  # TODO this doesn't get called when file with hls opened for first time. Also other weird effects.
-# https://stackoverflow.com/questions/43125002/on-load-method-doesnt-work-as-expected
-# https://github.com/sublimehq/sublime_text/issues/5
-
-
-#-----------------------------------------------------------------------------------
-def plugin_loaded():
-    print('SbotHighlight plugin_loaded()')
-    global _store_path
-    _store_path = os.path.join(sublime.packages_path(), 'User', 'SbotStore')
-    pathlib.Path(_store_path).mkdir(parents=True, exist_ok=True)
-
-
-def plugin_unloaded():
-    print('SbotHighlight plugin_unloaded()')
-
-
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
-    ''' Listener for view specific events of interest. '''
 
     def on_init(self, views):
-        print(f'HighlightEvent on_init {views}')
+        ''' First thing that happens. '''
 
-    # When you create a new empty file
-    def on_new(self, view):
-        print(f'HighlightEvent on_new {view.file_name()}')
+        # Init now.
+        global _store_path
+        _store_path = os.path.join(sublime.packages_path(), 'User', 'SbotStore')
+        pathlib.Path(_store_path).mkdir(parents=True, exist_ok=True)
 
-    # When you load an existing file
+        view = views[0]
+        _open_hls(view.window().id(), view.window().project_file_name())
+
+
     def on_load(self, view):
-        print(f'HighlightEvent on_load {view.file_name()}')
-
-    # def on_reload(self, view): # Don't print while looking at logfile - endless loop
-    #     print(f'HighlightEvent on_reload {view.file_name()}')
-
-    # When you use File > New view into file on an existing file
-    def on_clone(self, view):
-        print(f'HighlightEvent on_clone {view.file_name()}')
-
-    def on_exit(self):
-        print(f'HighlightEvent on_exit')
-
-
-#-----------------------------------------------------------------------------------
-class HighlightViewEvent(sublime_plugin.ViewEventListener):
-    ''' Listener for view specific events of interest. '''
-
-    def on_init(self):
-        print(f'HighlightViewEvent on_init {self.view.file_name()}')
-# Sublime Text 4050 introduces an on_init() event, which is triggered once for a plugin after plugin_loaded() is called.
-# It receives a list of views, which were loaded before on_init() is called.
-# A plugin can use this event to do certain initializations for those views.
-
-    def on_load(self):
-        print(f'HighlightViewEvent on_load {self.view.file_name()}')
-
-    def on_activated(self):
-        ''' When focus/tab received. '''
-        view = self.view
+        ''' When you load an existing file. '''
         global _views_inited
+
         vid = view.id()
         winid = view.window().id()
         fn = view.file_name()
-        print(f'HighlightViewEvent on_activated {view.file_name()}')
 
         # Lazy init.
         if fn is not None:  # Sometimes this happens...
-            # Is the persist file read yet?
-            if winid not in _hls:
-                _open_hls(winid, view.window().project_file_name())
-
-            # Init the view, maybe.
+            # Init the view if not already.
             if vid not in _views_inited:
                 _views_inited.add(vid)
 
                 # Init the view with any persist values.
                 tokens = _get_persist_tokens(view, False)
                 if tokens is not None:
-                    # print('7777777')
                     for token, tparams in tokens.items():
                         _highlight_view(view, token, tparams['whole_word'], tparams['scope'])
 
-    def on_load(self):
-        ''' Called when file loaded. '''
-        # print('on_load')
-        pass
-
-    def on_deactivated(self):
+    def on_deactivated(self, view):
         ''' Save to file when focus/tab lost. '''
-        view = self.view
-        winid = view.window().id()
-        if winid in _hls:
-            _save_hls(winid, view.window().project_file_name())
-
-    def on_close(self):
-        ''' Called when a view is closed. Note there may still be other views into the same buffer. '''
-        pass
+        if _hls is not None:
+            winid = view.window().id()
+            if winid in _hls:
+                _save_hls(winid, view.window().project_file_name())
 
 
 #-----------------------------------------------------------------------------------
@@ -177,7 +122,6 @@ def _get_store_fn(project_fn):
     ''' General utility. '''
     global _store_path
     project_fn = os.path.basename(project_fn).replace('.sublime-project', HIGHLIGHT_FILE_EXT)
-    # print(f'{_store_path} {project_fn}')
     store_fn = os.path.join(_store_path, project_fn)
     return store_fn
 
@@ -218,7 +162,8 @@ def _open_hls(winid, project_fn):
     ''' General project opener. '''
 
     global _hls
-
+    _hls = {}
+    
     if project_fn is not None:
         store_fn = _get_store_fn(project_fn)
 
@@ -254,13 +199,14 @@ def _get_persist_tokens(view, init_empty):
     winid = view.window().id()
     fn = view.file_name()
 
-    if winid in _hls:
-        if fn not in _hls[winid]:
-            if init_empty:
-                # Add a new one.
-                _hls[winid][fn] = {}
+    if _hls is not None:
+        if winid in _hls:
+            if fn not in _hls[winid]:
+                if init_empty:
+                    # Add a new one.
+                    _hls[winid][fn] = {}
+                    vals = _hls[winid][fn]
+            else:
                 vals = _hls[winid][fn]
-        else:
-            vals = _hls[winid][fn]
 
     return vals
