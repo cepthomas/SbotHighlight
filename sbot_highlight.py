@@ -1,9 +1,7 @@
 import os
-import sys
 import re
 import pathlib
 import json
-import time
 import sublime
 import sublime_plugin
 
@@ -12,7 +10,6 @@ import sublime_plugin
 # Definitions.
 HIGHLIGHT_REGION_NAME = 'highlight_%s'
 HIGHLIGHT_FILE_EXT = '.sbot-hls'
-
 
 # The current highlight collections. Key is window id which corresponds to a project.
 _hls = None
@@ -38,13 +35,12 @@ class HighlightEvent(sublime_plugin.EventListener):
         view = views[0]
         _open_hls(view.window().id(), view.window().project_file_name())
 
-
     def on_load(self, view):
         ''' When you load an existing file. '''
         global _views_inited
 
         vid = view.id()
-        winid = view.window().id()
+        # winid = view.window().id()
         fn = view.file_name()
 
         # Lazy init.
