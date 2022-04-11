@@ -11,10 +11,12 @@ import sublime_plugin
 HIGHLIGHT_REGION_NAME = 'highlight_%s'
 HIGHLIGHT_FILE_EXT = '.sbot-hls'
 
-# The current highlight collections. Key is window id which corresponds to a project.
-_hls = None
+# The current highlight collections. This is global across all ST instances/window/project.
+# Key is current window id, value is the collection of file/highlight info.
+_hls = {}
 
 
+#-----------------------------------------------------------------------------------
 # Decorator for tracing function entry.
 def trace_func(func):
     def inner(ref, *args):
@@ -31,31 +33,47 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     @trace_func
     def on_init(self, views):
-        ''' First thing that happens. '''
+        ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
         self._open_hls(view.window().id(), view.window().project_file_name())
         for view in views:
-            self._load_file(view)
+            self._init_view(view)
+
+    @trace_func
+    def on_load_project(self, window):
+        ''' This gets called for new windows but not for the first one. '''
+        self._open_hls(window.id(), window.project_file_name())
+        # print(f'### wid:{window.id()} proj:{window.project_file_name()} _hls:{_hls}')
+        for view in window.views():
+            self._init_view(view)
+
+    @trace_func
+    def on_pre_close_project(self, window):
+        ''' Save to file when closing window/project. Seems to be called twice. '''
+        # print(f'### wid:{window.id()} _hls:{_hls}')
+        winid = window.id()
+        if winid in _hls:
+            self._save_hls(winid, window.project_file_name())
 
     @trace_func
     def on_load(self, view):
-        ''' When you load an existing file. '''
-        self._load_file(view)
+        ''' Load a file. '''
+        self._init_view(view)
+
+    # @trace_func
+    # def on_deactivated(self, view):
+    #     ''' Save to file when focus/tab lost. This seems to be the most reliable event. '''
+    #     window = view.window()
+    #     if _hls is not None and window is not None:
+    #         winid = window.id()
+    #         if winid in _hls:
+    #             self._save_hls(winid, window.project_file_name())
 
     @trace_func
-    def on_deactivated(self, view):
-        ''' Save to file when focus/tab lost. '''
-        window = view.window()
-        if _hls is not None and window is not None:
-            winid = window.id()
-            if winid in _hls:
-                self._save_hls(winid, window.project_file_name())
-
-    @trace_func
-    def _load_file(self, view):
+    def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
-        if fn is not None:  # Sometimes this happens.
+        if view.is_scratch() is False and fn is not None:
             # Init the view if not already.
             vid = view.id()
             if vid not in self.views_inited:
@@ -71,7 +89,6 @@ class HighlightEvent(sublime_plugin.EventListener):
     def _open_hls(self, winid, project_fn):
         ''' General project opener. '''
         global _hls
-        _hls = {}
         
         if project_fn is not None:
             store_fn = _get_store_fn(project_fn)
@@ -94,27 +111,26 @@ class HighlightEvent(sublime_plugin.EventListener):
             store_fn = _get_store_fn(project_fn)
 
             # Remove invalid files and any empty values.
-            if winid in _hls:
-                # Safe iteration - accumulate elements to del later.
-                del_els = []
+            # Safe iteration - accumulate elements to del later.
+            del_els = []
 
-                for fn, _ in _hls[winid].items():
-                    if fn is not None:
-                        if not os.path.exists(fn):
-                            del_els.append((winid, fn))
-                        elif len(_hls[winid][fn]) == 0:
-                            del_els.append((winid, fn))
+            for fn, _ in _hls[winid].items():
+                if fn is not None:
+                    if not os.path.exists(fn):
+                        del_els.append((winid, fn))
+                    elif len(_hls[winid][fn]) == 0:
+                        del_els.append((winid, fn))
 
-                # Now remove from collection.
-                for (w, fn) in del_els:
-                    del _hls[w][fn]
+            # Now remove from collection.
+            for (w, fn) in del_els:
+                del _hls[w][fn]
 
-                # Now save, or delete if empty.
-                if len(_hls[winid]) > 0:
-                    with open(store_fn, 'w') as fp:
-                        json.dump(_hls[winid], fp, indent=4)
-                elif os.path.isfile(store_fn):
-                    os.remove(store_fn)
+            # Now save, or delete if empty.
+            if len(_hls[winid]) > 0:
+                with open(store_fn, 'w') as fp:
+                    json.dump(_hls[winid], fp, indent=4)
+            elif os.path.isfile(store_fn):
+                os.remove(store_fn)
 
 
 #-----------------------------------------------------------------------------------
@@ -189,21 +205,21 @@ def _get_persist_tokens(view, init_empty):
     winid = view.window().id()
     fn = view.file_name()
 
-    if _hls is not None:
-        if winid in _hls:
-            if fn not in _hls[winid]:
-                if init_empty:
-                    # Add a new one.
-                    _hls[winid][fn] = {}
-                    vals = _hls[winid][fn]
-            else:
+    if winid in _hls:
+        if fn not in _hls[winid]:
+            if init_empty:
+                # Add a new one.
+                _hls[winid][fn] = {}
                 vals = _hls[winid][fn]
+        else:
+            vals = _hls[winid][fn]
 
     return vals
 
 #-----------------------------------------------------------------------------------
 def _get_store_fn(project_fn):
     ''' General utility. '''
+
     store_path = os.path.join(sublime.packages_path(), 'User', 'SbotStore')
     pathlib.Path(store_path).mkdir(parents=True, exist_ok=True)
     project_fn = os.path.basename(project_fn).replace('.sublime-project', HIGHLIGHT_FILE_EXT)
