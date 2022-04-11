@@ -5,7 +5,6 @@ import json
 import sublime
 import sublime_plugin
 
-# TODO clear all hls in project.
 
 # Definitions.
 HIGHLIGHT_REGION_NAME = 'highlight_%s'
@@ -181,6 +180,29 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         if winid in _hls:
             fn = self.view.file_name()
             del _hls[winid][fn]
+
+
+#-----------------------------------------------------------------------------------
+class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
+    ''' Clear all in this project.'''
+
+    def run(self, edit):
+        global _hls
+
+        # Clear visuals in open views.
+        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        highlight_scopes = settings.get('highlight_scopes')
+
+        # Clear visuals in open views.
+        for vv in self.view.window().views():
+            for i, value in enumerate(highlight_scopes):
+                reg_name = HIGHLIGHT_REGION_NAME % value
+                vv.erase_regions(reg_name)
+
+        # Clear collection for current window only.
+        winid = self.view.window().id()
+        if winid in _hls:
+            _hls[winid] = {}
 
 
 #-----------------------------------------------------------------------------------

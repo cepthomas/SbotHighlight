@@ -12,5 +12,6 @@
             { "caption": "HL 6", "command": "sbot_highlight_text", "args" : {"hl_index" : 5} },
         ]
     },
-    { "caption": "Clear Highlights", "command": "sbot_clear_highlights" },
+    { "caption": "Clear File Highlights", "command": "sbot_clear_highlights" },
+    { "caption": "Clear All Highlights", "command": "sbot_clear_all_highlights" },
 ]
