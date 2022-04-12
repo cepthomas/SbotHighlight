@@ -42,14 +42,12 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
         self._open_hls(window.id(), window.project_file_name())
-        # print(f'### wid:{window.id()} proj:{window.project_file_name()} _hls:{_hls}')
         for view in window.views():
             self._init_view(view)
 
     @trace_func
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        # print(f'### wid:{window.id()} _hls:{_hls}')
         winid = window.id()
         if winid in _hls:
             self._save_hls(winid, window.project_file_name())
@@ -200,7 +198,7 @@ def _highlight_view(view, token, whole_word, scope):
     ''' Colorize one token. '''
 
     escaped = re.escape(token)
-    if whole_word and escaped[0].isalnum():
+    if whole_word: # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
 
     highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
