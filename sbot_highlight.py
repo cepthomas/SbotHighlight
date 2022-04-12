@@ -59,15 +59,6 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' Load a file. '''
         self._init_view(view)
 
-    # @trace_func
-    # def on_deactivated(self, view):
-    #     ''' Save to file when focus/tab lost. This seems to be the most reliable event. '''
-    #     window = view.window()
-    #     if _hls is not None and window is not None:
-    #         winid = window.id()
-    #         if winid in _hls:
-    #             self._save_hls(winid, window.project_file_name())
-
     @trace_func
     def _init_view(self, view):
         ''' Lazy init. '''
@@ -167,7 +158,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         global _hls
 
-        # Clean displayed colors.
+        # Clear visuals in open views.
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
         highlight_scopes = settings.get('highlight_scopes')
 
@@ -193,7 +184,6 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
         highlight_scopes = settings.get('highlight_scopes')
 
-        # Clear visuals in open views.
         for vv in self.view.window().views():
             for i, value in enumerate(highlight_scopes):
                 reg_name = HIGHLIGHT_REGION_NAME % value
