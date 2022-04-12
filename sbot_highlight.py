@@ -68,10 +68,10 @@ class HighlightEvent(sublime_plugin.EventListener):
                 self.views_inited.add(vid)
 
                 # Init the view with any persist values.
-                tokens = _get_persist_tokens(view, False)
-                if tokens is not None:
-                    for token, tparams in tokens.items():
-                        _highlight_view(view, token, tparams['whole_word'], tparams['scope'])
+                hl_vals = _get_hl_vals(view, False)
+                if hl_vals is not None:
+                    for scope, tparams in hl_vals.items():
+                        _highlight_view(view, tparams['token'], tparams['whole_word'], scope)
 
     @trace_func
     def _open_hls(self, winid, project_fn):
@@ -142,10 +142,10 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
         hl_index %= len(highlight_scopes)
         scope = highlight_scopes[hl_index]
-        tokens = _get_persist_tokens(self.view, True)
+        hl_vals = _get_hl_vals(self.view, True)
 
-        if tokens is not None:
-            tokens[token] = {"scope": scope, "whole_word": whole_word}
+        if hl_vals is not None:
+            hl_vals[scope] = {"token": token, "whole_word": whole_word}
         _highlight_view(self.view, token, whole_word, scope)
 
 
@@ -207,7 +207,7 @@ def _highlight_view(view, token, whole_word, scope):
 
 
 #-----------------------------------------------------------------------------------
-def _get_persist_tokens(view, init_empty):
+def _get_hl_vals(view, init_empty):
     ''' General helper to get the data values from collection. If init_empty and there are none, add a default value. '''
     global _hls
     
