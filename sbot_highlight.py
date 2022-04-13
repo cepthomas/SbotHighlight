@@ -7,7 +7,7 @@ import sublime_plugin
 
 
 # Definitions.
-HIGHLIGHT_REGION_NAME = 'highlight_%s'
+HIGHLIGHT_REGION_NAME = 'highlight_%s_region'
 HIGHLIGHT_FILE_EXT = '.sbot-hls'
 
 # The current highlight collections. This is global across all ST instances/window/project.
@@ -34,23 +34,22 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
-        self._open_hls(view.window().id(), view.window().project_file_name())
+        self._open_hls(view.window())
         for view in views:
             self._init_view(view)
 
     @trace_func
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
-        self._open_hls(window.id(), window.project_file_name())
+        self._open_hls(window)
         for view in window.views():
             self._init_view(view)
 
     @trace_func
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        winid = window.id()
-        if winid in _hls:
-            self._save_hls(winid, window.project_file_name())
+        if window.id() in _hls:
+            self._save_hls(window)
 
     @trace_func
     def on_load(self, view):
@@ -74,10 +73,13 @@ class HighlightEvent(sublime_plugin.EventListener):
                         _highlight_view(view, tparams['token'], tparams['whole_word'], scope)
 
     @trace_func
-    def _open_hls(self, winid, project_fn):
+    def _open_hls(self, window):
         ''' General project opener. '''
         global _hls
-        
+
+        winid = window.id()
+        project_fn = window.project_file_name()
+
         if project_fn is not None:
             store_fn = _get_store_fn(project_fn)
 
@@ -91,9 +93,12 @@ class HighlightEvent(sublime_plugin.EventListener):
                 _hls[winid] = {}
 
     @trace_func
-    def _save_hls(self, winid, project_fn):
+    def _save_hls(self, window):
         ''' General project saver. '''
         global _hls
+
+        winid = window.id()
+        project_fn = window.project_file_name()
 
         if project_fn is not None:
             store_fn = _get_store_fn(project_fn)
@@ -102,11 +107,13 @@ class HighlightEvent(sublime_plugin.EventListener):
             # Safe iteration - accumulate elements to del later.
             del_els = []
 
-            for fn, _ in _hls[winid].items():
+            hls = _hls[winid]
+
+            for fn, _ in hls.items():
                 if fn is not None:
                     if not os.path.exists(fn):
                         del_els.append((winid, fn))
-                    elif len(_hls[winid][fn]) == 0:
+                    elif len(hls[fn]) == 0:
                         del_els.append((winid, fn))
 
             # Now remove from collection.
@@ -114,9 +121,9 @@ class HighlightEvent(sublime_plugin.EventListener):
                 del _hls[w][fn]
 
             # Now save, or delete if empty.
-            if len(_hls[winid]) > 0:
+            if len(hls) > 0:
                 with open(store_fn, 'w') as fp:
-                    json.dump(_hls[winid], fp, indent=4)
+                    json.dump(hls, fp, indent=4)
             elif os.path.isfile(store_fn):
                 os.remove(store_fn)
 
