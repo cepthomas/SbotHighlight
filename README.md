@@ -7,6 +7,8 @@ Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for ST4 on Windows and Linux.
 
+Requires SbotCommon plugin.
+
 ## Commands
 | Command                    | Implementation | Description                   | Args         |
 | :--------                  | :-------       | :-------                      | :--------    |

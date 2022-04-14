@@ -1,9 +1,17 @@
+import sys
 import os
 import re
 import pathlib
 import json
 import sublime
 import sublime_plugin
+
+try:
+    from SbotCommon.sbot_common import trace_function, trace_method, get_store_fn
+except ModuleNotFoundError as e:
+    sublime.message_dialog('SbotHighlight plugin requires SbotCommon plugin')
+
+
 
 
 # Definitions.
@@ -16,21 +24,12 @@ _hls = {}
 
 
 #-----------------------------------------------------------------------------------
-# Decorator for tracing function entry.
-def trace_func(func):
-    def inner(ref, *args):
-        print(f'FUN {ref.__class__.__name__}.{func.__name__} {args}')
-        return func(ref, *args)
-    return inner
-
-
-#-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
 
     # Need to track what's been initialized.
     views_inited = set()
 
-    @trace_func
+    @trace_method
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
@@ -38,25 +37,25 @@ class HighlightEvent(sublime_plugin.EventListener):
         for view in views:
             self._init_view(view)
 
-    @trace_func
+    @trace_method
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
         self._open_hls(window)
         for view in window.views():
             self._init_view(view)
 
-    @trace_func
+    @trace_method
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
         if window.id() in _hls:
             self._save_hls(window)
 
-    @trace_func
+    @trace_method
     def on_load(self, view):
         ''' Load a file. '''
         self._init_view(view)
 
-    @trace_func
+    @trace_method
     def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
@@ -72,7 +71,7 @@ class HighlightEvent(sublime_plugin.EventListener):
                     for scope, tparams in hl_vals.items():
                         _highlight_view(view, tparams['token'], tparams['whole_word'], scope)
 
-    @trace_func
+    @trace_method
     def _open_hls(self, window):
         ''' General project opener. '''
         global _hls
@@ -81,7 +80,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         project_fn = window.project_file_name()
 
         if project_fn is not None:
-            store_fn = _get_store_fn(project_fn)
+            store_fn = get_store_fn(project_fn, HIGHLIGHT_FILE_EXT)
 
             if os.path.isfile(store_fn):
                 with open(store_fn, 'r') as fp:
@@ -92,7 +91,7 @@ class HighlightEvent(sublime_plugin.EventListener):
                 sublime.status_message('Creating new highlights file')
                 _hls[winid] = {}
 
-    @trace_func
+    @trace_method
     def _save_hls(self, window):
         ''' General project saver. '''
         global _hls
@@ -101,7 +100,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         project_fn = window.project_file_name()
 
         if project_fn is not None:
-            store_fn = _get_store_fn(project_fn)
+            store_fn = get_store_fn(project_fn, HIGHLIGHT_FILE_EXT)
 
             # Remove invalid files and any empty values.
             # Safe iteration - accumulate elements to del later.
@@ -232,13 +231,3 @@ def _get_hl_vals(view, init_empty):
             vals = _hls[winid][fn]
 
     return vals
-
-#-----------------------------------------------------------------------------------
-def _get_store_fn(project_fn):
-    ''' General utility. '''
-
-    store_path = os.path.join(sublime.packages_path(), 'User', 'SbotStore')
-    pathlib.Path(store_path).mkdir(parents=True, exist_ok=True)
-    project_fn = os.path.basename(project_fn).replace('.sublime-project', HIGHLIGHT_FILE_EXT)
-    store_fn = os.path.join(store_path, project_fn)
-    return store_fn
