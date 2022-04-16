@@ -9,9 +9,7 @@ import sublime_plugin
 try:
     from SbotCommon.sbot_common import trace_function, trace_method, get_store_fn
 except ModuleNotFoundError as e:
-    sublime.message_dialog('SbotHighlight plugin requires SbotCommon plugin')
-
-
+    raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
 
 
 # Definitions.
@@ -22,6 +20,7 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 # Key is current window id, value is the collection of file/highlight info.
 _hls = {}
 
+# TODO fp = settings.get("file_path") if len(settings.get("file_path")) > 0 else os.path.join(sublime.packages_path(), 'User', 'SbotStore')
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
