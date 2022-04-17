@@ -21,11 +21,6 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 _hls = {}
 
 
-# TODO fp = settings.get("file_path") if len(settings.get("file_path")) > 0 else os.path.join(sublime.packages_path(), 'User', 'SbotStore')
-# self._log_fn = os.path.join(fp, 'sbot.log')
-# C:\\Users\\cepth\\AppData\\Roaming\\Sublime Text\\Packages\\User\\Test
-# | `file_path`        | Full path to the log file       | if empty default is `%data_dir%\Packages\User\SbotStore` |
-
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
