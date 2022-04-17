@@ -19,5 +19,5 @@ Requires SbotCommon plugin.
 ## Settings
 | Setting              | Description                              | Options   |
 | :--------            | :-------                                 | :------   |
-| `highlight_scopes`   | List of up to 6 scope names for commands | |
-
+| `scopes`             | List of up to 6 scope names for commands |           |
+| `file_path`          | Full path to the persistence file        | if empty default is `%data_dir%\Packages\User\SbotStore` |

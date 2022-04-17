@@ -20,18 +20,27 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 # Key is current window id, value is the collection of file/highlight info.
 _hls = {}
 
+
 # TODO fp = settings.get("file_path") if len(settings.get("file_path")) > 0 else os.path.join(sublime.packages_path(), 'User', 'SbotStore')
+# self._log_fn = os.path.join(fp, 'sbot.log')
+# C:\\Users\\cepth\\AppData\\Roaming\\Sublime Text\\Packages\\User\\Test
+# | `file_path`        | Full path to the log file       | if empty default is `%data_dir%\Packages\User\SbotStore` |
+
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
 
     # Need to track what's been initialized.
-    views_inited = set()
+    _views_inited = set()
+    _store_fn = None
 
     @trace_method
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
+        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        project_fn = view.window().project_file_name()
+        self._store_fn = get_store_fn(settings.get('file_path'), project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
         for view in views:
             self._init_view(view)
@@ -61,8 +70,8 @@ class HighlightEvent(sublime_plugin.EventListener):
         if view.is_scratch() is False and fn is not None:
             # Init the view if not already.
             vid = view.id()
-            if vid not in self.views_inited:
-                self.views_inited.add(vid)
+            if vid not in self._views_inited:
+                self._views_inited.add(vid)
 
                 # Init the view with any persist values.
                 hl_vals = _get_hl_vals(view, False)
@@ -75,14 +84,11 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' General project opener. '''
         global _hls
 
-        winid = window.id()
-        project_fn = window.project_file_name()
+        if self._store_fn is not None:
+            winid = window.id()
 
-        if project_fn is not None:
-            store_fn = get_store_fn(project_fn, HIGHLIGHT_FILE_EXT)
-
-            if os.path.isfile(store_fn):
-                with open(store_fn, 'r') as fp:
+            if os.path.isfile(self._store_fn):
+                with open(self._store_fn, 'r') as fp:
                     values = json.load(fp)
                     _hls[winid] = values
             else:
@@ -95,11 +101,8 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' General project saver. '''
         global _hls
 
-        winid = window.id()
-        project_fn = window.project_file_name()
-
-        if project_fn is not None:
-            store_fn = get_store_fn(project_fn, HIGHLIGHT_FILE_EXT)
+        if self._store_fn is not None:
+            winid = window.id()
 
             # Remove invalid files and any empty values.
             # Safe iteration - accumulate elements to del later.
@@ -120,10 +123,10 @@ class HighlightEvent(sublime_plugin.EventListener):
 
             # Now save, or delete if empty.
             if len(hls) > 0:
-                with open(store_fn, 'w') as fp:
+                with open(self._store_fn, 'w') as fp:
                     json.dump(hls, fp, indent=4)
-            elif os.path.isfile(store_fn):
-                os.remove(store_fn)
+            elif os.path.isfile(self._store_fn):
+                os.remove(self._store_fn)
 
 
 #-----------------------------------------------------------------------------------
@@ -135,7 +138,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, hl_index):
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
-        highlight_scopes = settings.get('highlight_scopes')
+        scopes = settings.get('scopes')
 
         # Get whole word or specific span.
         region = self.view.sel()[0]
@@ -145,8 +148,8 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
             region = self.view.word(region)
         token = self.view.substr(region)
 
-        hl_index %= len(highlight_scopes)
-        scope = highlight_scopes[hl_index]
+        hl_index %= len(scopes)
+        scope = scopes[hl_index]
         hl_vals = _get_hl_vals(self.view, True)
 
         if hl_vals is not None:
@@ -163,9 +166,9 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
 
         # Clear visuals in open views.
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
-        highlight_scopes = settings.get('highlight_scopes')
+        scopes = settings.get('scopes')
 
-        for i, value in enumerate(highlight_scopes):
+        for i, value in enumerate(scopes):
             reg_name = HIGHLIGHT_REGION_NAME % value
             self.view.erase_regions(reg_name)
 
@@ -185,10 +188,10 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
 
         # Clear visuals in open views.
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
-        highlight_scopes = settings.get('highlight_scopes')
+        scopes = settings.get('scopes')
 
         for vv in self.view.window().views():
-            for i, value in enumerate(highlight_scopes):
+            for i, value in enumerate(scopes):
                 reg_name = HIGHLIGHT_REGION_NAME % value
                 vv.erase_regions(reg_name)
 
