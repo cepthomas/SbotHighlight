@@ -7,7 +7,7 @@ import sublime
 import sublime_plugin
 
 try:
-    from SbotCommon.sbot_common import trace_function, trace_method, get_store_fn
+    from SbotCommon.sbot_common import get_store_fn, log_message
 except ModuleNotFoundError as e:
     raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
 
@@ -29,7 +29,6 @@ class HighlightEvent(sublime_plugin.EventListener):
     _views_inited = set()
     _store_fn = None
 
-    @trace_method
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
@@ -40,25 +39,21 @@ class HighlightEvent(sublime_plugin.EventListener):
         for view in views:
             self._init_view(view)
 
-    @trace_method
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
         self._open_hls(window)
         for view in window.views():
             self._init_view(view)
 
-    @trace_method
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
         if window.id() in _hls:
             self._save_hls(window)
 
-    @trace_method
     def on_load(self, view):
         ''' Load a file. '''
         self._init_view(view)
 
-    @trace_method
     def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
@@ -74,7 +69,6 @@ class HighlightEvent(sublime_plugin.EventListener):
                     for scope, tparams in hl_vals.items():
                         _highlight_view(view, tparams['token'], tparams['whole_word'], scope)
 
-    @trace_method
     def _open_hls(self, window):
         ''' General project opener. '''
         global _hls
@@ -91,7 +85,6 @@ class HighlightEvent(sublime_plugin.EventListener):
                 sublime.status_message('Creating new highlights file')
                 _hls[winid] = {}
 
-    @trace_method
     def _save_hls(self, window):
         ''' General project saver. '''
         global _hls
