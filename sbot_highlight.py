@@ -1,14 +1,12 @@
-import sys
 import os
 import re
-import pathlib
 import json
 import sublime
 import sublime_plugin
 
 try:
-    from SbotCommon.sbot_common import get_store_fn, log_message
-except ModuleNotFoundError as e:
+    from SbotCommon.sbot_common import get_store_fn, slog
+except ModuleNotFoundError:
     raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
 
 
@@ -19,7 +17,6 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 # The current highlight collections. This is global across all ST instances/window/project.
 # Key is current window id, value is the collection of file/highlight info.
 _hls = {}
-
 
 
 #-----------------------------------------------------------------------------------
@@ -194,7 +191,7 @@ def _highlight_view(view, token, whole_word, scope):
     ''' Colorize one token. '''
 
     escaped = re.escape(token)
-    if whole_word: # and escaped[0].isalnum():
+    if whole_word:  # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
 
     highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
