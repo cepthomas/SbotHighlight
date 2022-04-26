@@ -5,7 +5,7 @@ import sublime
 import sublime_plugin
 
 try:
-    from SbotCommon.sbot_common import get_store_fn, slog
+    from SbotCommon.sbot_common import get_store_fn_for_project, slog
 except ModuleNotFoundError:
     raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
 
@@ -31,7 +31,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         view = views[0]
         settings = sublime.load_settings("SbotHighlight.sublime-settings")
         project_fn = view.window().project_file_name()
-        self._store_fn = get_store_fn(settings.get('file_path'), project_fn, HIGHLIGHT_FILE_EXT)
+        self._store_fn = get_store_fn_for_project(settings.get('file_path'), project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
         for view in views:
             self._init_view(view)
@@ -44,6 +44,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
+        slog('TRAC', f'{window.id()} {_hls}')
         if window.id() in _hls:
             self._save_hls(window)
 
@@ -68,6 +69,8 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _open_hls(self, window):
         ''' General project opener. '''
+        slog('TRAC', f'{self._store_fn}')
+
         global _hls
 
         if self._store_fn is not None:
@@ -84,6 +87,8 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _save_hls(self, window):
         ''' General project saver. '''
+        slog('TRAC', f'{self._store_fn}')
+        
         global _hls
 
         if self._store_fn is not None:
