@@ -21,4 +21,4 @@ Requires [SbotCommon](https://github.com/cepthomas/SbotCommon) plugin.
 | Setting              | Description                              | Options   |
 | :--------            | :-------                                 | :------   |
 | `scopes`             | List of up to 6 scope names for commands |           |
-| `file_path`          | Path to the persistence file folder      | if empty default is `%data_dir%\Packages\User\SbotStore` |
+| `file_path`          | Path to the persistence file folder      | if empty default is `%data_dir%\Packages\User\.SbotStore` |

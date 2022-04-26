@@ -44,9 +44,13 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        slog('TRAC', f'{window.id()} {_hls}')
+        # slog('TRAC', f'|{window.id()}|{_hls}')
         if window.id() in _hls:
             self._save_hls(window)
+
+    def on_pre_close(self, view):
+        if self.window().id() in _hls:
+            self._save_hls(self.window())
 
     def on_load(self, view):
         ''' Load a file. '''
@@ -69,8 +73,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _open_hls(self, window):
         ''' General project opener. '''
-        slog('TRAC', f'{self._store_fn}')
-
+        # slog('TRAC', f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -87,8 +90,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _save_hls(self, window):
         ''' General project saver. '''
-        slog('TRAC', f'{self._store_fn}')
-        
+        # slog('TRAC', f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -194,7 +196,6 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
 #-----------------------------------------------------------------------------------
 def _highlight_view(view, token, whole_word, scope):
     ''' Colorize one token. '''
-
     escaped = re.escape(token)
     if whole_word:  # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
