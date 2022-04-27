@@ -7,12 +7,15 @@ import sublime_plugin
 try:
     from SbotCommon.sbot_common import get_store_fn_for_project, slog
 except ModuleNotFoundError:
+    sublime.message_dialog('SbotHighlight plugin requires SbotCommon plugin')
     raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
 
 
 # Definitions.
 HIGHLIGHT_REGION_NAME = 'highlight_%s_region'
 HIGHLIGHT_FILE_EXT = '.sbot-hls'
+HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
+
 
 # The current highlight collections. This is global across all ST instances/window/project.
 # Key is current window id, value is the collection of file/highlight info.
@@ -29,7 +32,7 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
-        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         project_fn = view.window().project_file_name()
         self._store_fn = get_store_fn_for_project(settings.get('file_path'), project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
@@ -49,8 +52,8 @@ class HighlightEvent(sublime_plugin.EventListener):
             self._save_hls(window)
 
     def on_pre_close(self, view):
-        if self.window().id() in _hls:
-            self._save_hls(self.window())
+        if view.window().id() in _hls:
+            self._save_hls(view.window())
 
     def on_load(self, view):
         ''' Load a file. '''
@@ -129,7 +132,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
     '''
 
     def run(self, edit, hl_index):
-        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         scopes = settings.get('scopes')
 
         # Get whole word or specific span.
@@ -157,7 +160,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         scopes = settings.get('scopes')
 
         for i, value in enumerate(scopes):
@@ -179,7 +182,7 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        settings = sublime.load_settings("SbotHighlight.sublime-settings")
+        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         scopes = settings.get('scopes')
 
         for vv in self.view.window().views():
