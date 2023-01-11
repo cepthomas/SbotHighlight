@@ -52,7 +52,8 @@ class HighlightEvent(sublime_plugin.EventListener):
             self._save_hls(window)
 
     def on_pre_close(self, view):
-        if view.window().id() in _hls:
+        id = view.window().id()
+        if id is not None and id in _hls:
             self._save_hls(view.window())
 
     def on_load(self, view):
