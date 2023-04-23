@@ -11,14 +11,14 @@ Built for ST4 on Windows and Linux.
 Requires [SbotCommon](https://github.com/cepthomas/SbotCommon) plugin.
 
 ## Commands
-| Command                    | Implementation | Description                   | Args         |
-| :--------                  | :-------       | :-------                      | :--------    |
+| Command                    | Implementation | Description                   | Args                           |
+| :--------                  | :-------       | :-------                      | :--------                      |
 | `sbot_highlight_text`      | Context        | Highlight text                | `hl_index` = index 1 through 6 |
 | `sbot_clear_highlight`     | Context        | Remove specific highlight     | `hl_index` = index 1 through 6 |
-| `sbot_clear_all_highlights`| Context        | Remove all highlights         |  |
+| `sbot_clear_all_highlights`| Context        | Remove all highlights         |                                |
 
 ## Settings
-| Setting              | Description                              | Options   |
-| :--------            | :-------                                 | :------   |
-| `scopes`             | List of up to 6 scope names for commands |           |
+| Setting              | Description                              | Options                                                   |
+| :--------            | :-------                                 | :------                                                   |
+| `scopes`             | List of up to 6 scope names for commands |                                                           |
 | `file_path`          | Path to the persistence file folder      | if empty default is `%data_dir%\Packages\User\.SbotStore` |
