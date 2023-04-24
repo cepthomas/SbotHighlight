@@ -1,5 +1,4 @@
 {
     // See README.md.
-    "file_path": "",
     "scopes": [ "string", "constant.language", "comment", "markup.underline.link", "variable", "invalid" ],
 }

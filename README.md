@@ -10,6 +10,10 @@ Built for ST4 on Windows and Linux.
 
 Requires [SbotCommon](https://github.com/cepthomas/SbotCommon) plugin.
 
+Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
+
+
+
 ## Commands
 | Command                    | Implementation | Description                   | Args                           |
 | :--------                  | :-------       | :-------                      | :--------                      |
@@ -21,4 +25,3 @@ Requires [SbotCommon](https://github.com/cepthomas/SbotCommon) plugin.
 | Setting              | Description                              | Options                                                   |
 | :--------            | :-------                                 | :------                                                   |
 | `scopes`             | List of up to 6 scope names for commands |                                                           |
-| `file_path`          | Path to the persistence file folder      | if empty default is `%data_dir%\Packages\User\.SbotStore` |
