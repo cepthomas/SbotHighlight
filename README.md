@@ -17,11 +17,11 @@ Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
 ## Commands
 | Command                    | Implementation | Description                   | Args                           |
 | :--------                  | :-------       | :-------                      | :--------                      |
-| `sbot_highlight_text`      | Context        | Highlight text                | `hl_index` = index 1 through 6 |
-| `sbot_clear_highlight`     | Context        | Remove specific highlight     | `hl_index` = index 1 through 6 |
-| `sbot_clear_all_highlights`| Context        | Remove all highlights         |                                |
+| sbot_highlight_text        | Context        | Highlight text                | hl_index = scope 1 - 6         |
+| sbot_clear_highlight       | Context        | Remove specific highlight     | hl_index = scope 1 - 6         |
+| sbot_clear_all_highlights  | Context        | Remove all highlights         |                                |
 
 ## Settings
-| Setting              | Description                              | Options                                                   |
-| :--------            | :-------                                 | :------                                                   |
-| `scopes`             | List of up to 6 scope names for commands |                                                           |
+| Setting              | Description                              | Options                                    |
+| :--------            | :-------                                 | :------                                    |
+| scopes               | List of up to 6 scope names for commands |                                            |
