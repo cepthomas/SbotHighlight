@@ -8,8 +8,6 @@ Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for ST4 on Windows and Linux.
 
-Requires [SbotCommon](https://github.com/cepthomas/SbotCommon) plugin.
-
 Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
 
 

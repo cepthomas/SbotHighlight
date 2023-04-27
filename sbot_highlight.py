@@ -3,12 +3,7 @@ import re
 import json
 import sublime
 import sublime_plugin
-
-try:
-    import SbotCommon.sbot_common as sbot
-except ModuleNotFoundError:
-    sublime.message_dialog('SbotHighlight plugin requires SbotCommon plugin')
-    raise ImportError('SbotHighlight plugin requires SbotCommon plugin')
+from .sbot_common import *
 
 
 # Definitions.
@@ -34,7 +29,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         view = views[0]
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         project_fn = view.window().project_file_name()
-        self._store_fn = sbot.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
+        self._store_fn = get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
         for view in views:
             self._init_view(view)
@@ -47,7 +42,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        # sbot.slog(sbot.CAT_DBG, f'|{window.id()}|{_hls}')
+        # slog(CAT_DBG, f'|{window.id()}|{_hls}')
         if window.id() in _hls:
             self._save_hls(window)
 
@@ -77,7 +72,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _open_hls(self, window):
         ''' General project opener. '''
-        # sbot.slog(sbot.CAT_DBG, f'{self._store_fn}')
+        # slog(CAT_DBG, f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -94,7 +89,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _save_hls(self, window):
         ''' General project saver. '''
-        # sbot.slog(sbot.CAT_DBG, f'{self._store_fn}')
+        # slog(CAT_DBG, f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
