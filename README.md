@@ -22,4 +22,4 @@ Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
 ## Settings
 | Setting              | Description                              | Options                                    |
 | :--------            | :-------                                 | :------                                    |
-| scopes               | List of up to 6 scope names for commands |                                            |
+| highlight_scopes     | List of up to 6 scope names for commands |                                            |

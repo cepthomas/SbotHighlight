@@ -129,7 +129,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, hl_index):
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        scopes = settings.get('scopes')
+        highlight_scopes = settings.get('highlight_scopes')
 
         # Get whole word or specific span.
         region = self.view.sel()[0]
@@ -139,8 +139,8 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
             region = self.view.word(region)
         token = self.view.substr(region)
 
-        hl_index %= len(scopes)
-        scope = scopes[hl_index]
+        hl_index %= len(highlight_scopes)
+        scope = highlight_scopes[hl_index]
         hl_vals = _get_hl_vals(self.view, True)
 
         if hl_vals is not None:
@@ -157,9 +157,9 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
 
         # Clear visuals in open views.
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        scopes = settings.get('scopes')
+        highlight_scopes = settings.get('highlight_scopes')
 
-        for i, value in enumerate(scopes):
+        for i, value in enumerate(highlight_scopes):
             reg_name = HIGHLIGHT_REGION_NAME % value
             self.view.erase_regions(reg_name)
 
@@ -179,10 +179,10 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
 
         # Clear visuals in open views.
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        scopes = settings.get('scopes')
+        highlight_scopes = settings.get('highlight_scopes')
 
         for vv in self.view.window().views():
-            for i, value in enumerate(scopes):
+            for i, value in enumerate(highlight_scopes):
                 reg_name = HIGHLIGHT_REGION_NAME % value
                 vv.erase_regions(reg_name)
 

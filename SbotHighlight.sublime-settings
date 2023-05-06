@@ -1,4 +1,4 @@
 {
     // See README.md.
-    "scopes": [ "string", "constant.language", "comment", "markup.underline.link", "variable", "invalid" ],
+    "highlight_scopes": [ "string", "constant.language", "comment", "markup.underline.link", "variable", "invalid" ],
 }
