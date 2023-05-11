@@ -167,7 +167,8 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         winid = self.view.window().id()
         if winid in _hls:
             fn = self.view.file_name()
-            del _hls[winid][fn]
+            if fn is not None and fn in _hls[winid]:
+                del _hls[winid][fn]
 
 
 #-----------------------------------------------------------------------------------
