@@ -1,14 +1,16 @@
 # What It Is
 
 Text colorizing per view with persistence per document.
-The way ST works, you have to define which scope to use for each of the different highlights.
-[SbotScope](https://github.com/cepthomas/SbotScope) may be useful when picking the scopes for the colors you want.
-
-Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for ST4 on Windows and Linux.
 
-Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
+- The way ST works, you have to define which scope to use for each of the different highlights.
+- Edit the setting `highlight_scopes` to taste. The defaults are just a wild guess.
+- [SbotScope](https://github.com/cepthomas/SbotScope) may be useful when picking the scopes for the colors you want.
+- Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
+- Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
+
+
 
 
 
