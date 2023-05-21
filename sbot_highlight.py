@@ -16,6 +16,8 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 # Key is current window id, value is the collection of file/highlight info.
 _hls = {}
 
+# TODO refresh_hls cmd instead of closing/opening the view.
+
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
