@@ -3,7 +3,7 @@ import re
 import json
 import sublime
 import sublime_plugin
-from .sbot_common import *
+from . import sbot_common as sc
 
 
 # Definitions.
@@ -31,7 +31,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         view = views[0]
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         project_fn = view.window().project_file_name()
-        self._store_fn = get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
+        self._store_fn = sc.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
         for view in views:
             self._init_view(view)
