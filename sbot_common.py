@@ -101,7 +101,7 @@ def wait_load_file(window, fpath, line):
         slog(CAT_ERR, f'Failed to open {fpath} {e}')
         vnew = None
 
-    return vnew    
+    return vnew
 
 
 #-----------------------------------------------------------------------------------

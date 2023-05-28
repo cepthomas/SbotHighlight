@@ -1,4 +1,4 @@
 {
-    // See README.md.
-    "highlight_scopes": [ "string", "variable", "markup.underline.link", "constant.language", "comment", "invalid" ],
+    // List of up to 6 scope names for highlight commands.
+    "highlight_scopes": [ "region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish" ],
 }
