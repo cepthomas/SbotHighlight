@@ -17,6 +17,8 @@ CAT_TRC = 'TRC'
 CAT_DBG = 'DBG'
 CAT_EXC = 'EXC'
 
+# This is shared across plugins.
+HIGHLIGHT_REGION_NAME = 'highlight_%s_region'
 
 #-----------------------------------------------------------------------------------
 def slog(cat: str, message='???'):

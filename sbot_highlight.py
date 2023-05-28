@@ -7,7 +7,6 @@ from . import sbot_common as sc
 
 
 # Definitions.
-HIGHLIGHT_REGION_NAME = 'highlight_%s_region'
 HIGHLIGHT_FILE_EXT = '.sbot-hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
@@ -162,7 +161,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         highlight_scopes = settings.get('highlight_scopes')
 
         for i, value in enumerate(highlight_scopes):
-            reg_name = HIGHLIGHT_REGION_NAME % value
+            reg_name = sc.HIGHLIGHT_REGION_NAME % value
             self.view.erase_regions(reg_name)
 
         # Remove from persist collection.
@@ -186,7 +185,7 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
 
         for vv in self.view.window().views():
             for i, value in enumerate(highlight_scopes):
-                reg_name = HIGHLIGHT_REGION_NAME % value
+                reg_name = sc.HIGHLIGHT_REGION_NAME % value
                 vv.erase_regions(reg_name)
 
         # Clear collection for current window only.
@@ -204,7 +203,7 @@ def _highlight_view(view, token, whole_word, scope):
 
     highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
     if len(highlight_regions) > 0:
-        view.add_regions(HIGHLIGHT_REGION_NAME % scope, highlight_regions, scope)
+        view.add_regions(sc.HIGHLIGHT_REGION_NAME % scope, highlight_regions, scope)
 
 
 #-----------------------------------------------------------------------------------
