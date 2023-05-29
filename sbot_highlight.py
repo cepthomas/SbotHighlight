@@ -12,10 +12,11 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
 
 # The current highlight collections. This is global across all ST instances/window/project.
-# Key is current window id, value is the collection of file/highlight info.
+# Key is current window id, value is the collection of highlight infos.
 _hls = {}
 
-# TODO refresh_hls cmd instead of closing/opening the view.
+
+# TODO refresh_hls cmd instead of having to close/open the view.
 
 
 #-----------------------------------------------------------------------------------
@@ -43,7 +44,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        # slog(CAT_DBG, f'|{window.id()}|{_hls}')
+        # sc.slog(sc.CAT_DBG, f'|{window.id()}|{_hls}')
         if window.id() in _hls:
             self._save_hls(window)
 
@@ -65,11 +66,11 @@ class HighlightEvent(sublime_plugin.EventListener):
             if vid not in self._views_inited:
                 self._views_inited.add(vid)
 
-                # Init the view with any persist values.
+                # Init the view with any persisted values.
                 hl_vals = _get_hl_vals(view, False)
                 if hl_vals is not None:
-                    for scope, tparams in hl_vals.items():
-                        _highlight_view(view, tparams['token'], tparams['whole_word'], scope)
+                    for hl_index, tparams in hl_vals.items():
+                        _highlight_view(view, tparams['token'], tparams['whole_word'], hl_index)
 
     def _open_hls(self, window):
         ''' General project opener. '''
@@ -123,10 +124,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
 #-----------------------------------------------------------------------------------
 class SbotHighlightTextCommand(sublime_plugin.TextCommand):
-    ''' Highlight specific words using scopes. Parts borrowed from StyleToken.
-    Note: Regions added by self.view.add_regions() can not set the foreground color. The scope color is used
-    for the region background color. Also they are not available via extract_scope().
-    '''
+    ''' Highlight specific words using scopes. Parts borrowed from StyleToken. '''
 
     def run(self, edit, hl_index):
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
@@ -140,13 +138,10 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
             region = self.view.word(region)
         token = self.view.substr(region)
 
-        hl_index %= len(highlight_scopes)
-        scope = highlight_scopes[hl_index]
         hl_vals = _get_hl_vals(self.view, True)
-
         if hl_vals is not None:
-            hl_vals[scope] = {"token": token, "whole_word": whole_word}
-        _highlight_view(self.view, token, whole_word, scope)
+            hl_vals[hl_index] = {"token": token, "whole_word": whole_word}
+        _highlight_view(self.view, token, whole_word, hl_index)
 
 
 #-----------------------------------------------------------------------------------
@@ -161,7 +156,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         highlight_scopes = settings.get('highlight_scopes')
 
         for i, value in enumerate(highlight_scopes):
-            reg_name = sc.HIGHLIGHT_REGION_NAME % value
+            reg_name = sc.HIGHLIGHT_REGION_NAME % i
             self.view.erase_regions(reg_name)
 
         # Remove from persist collection.
@@ -195,25 +190,35 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
 
 
 #-----------------------------------------------------------------------------------
-def _highlight_view(view, token, whole_word, scope):
+def _highlight_view(view, token, whole_word, hl_index):
     ''' Colorize one token. '''
     escaped = re.escape(token)
     if whole_word:  # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
 
-    highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
-    if len(highlight_regions) > 0:
-        view.add_regions(sc.HIGHLIGHT_REGION_NAME % scope, highlight_regions, scope)
+    settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
+    highlight_scopes = settings.get('highlight_scopes')
+
+    if hl_index < len(highlight_scopes):
+        highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
+        if len(highlight_regions) > 0:
+            view.add_regions(sc.HIGHLIGHT_REGION_NAME % hl_index, highlight_regions, highlight_scopes[hl_index])
+    else:
+        sc.slog(sc.CAT_ERR, f'Invalid scope index {hl_index}')
 
 
 #-----------------------------------------------------------------------------------
 def _get_hl_vals(view, init_empty):
-    ''' General helper to get the data values from collection. If init_empty and there are none, add a default value. '''
+    ''' General helper to get the data values from persisted collection. If init_empty and there are none, add a default value. '''
     global _hls
     
     vals = None  # Default
     winid = view.window().id()
     fn = view.file_name()
+
+    if winid not in _hls and init_empty:
+        # Add a new one.
+        _hls[winid] = {}
 
     if winid in _hls:
         if fn not in _hls[winid]:
