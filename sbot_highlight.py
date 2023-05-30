@@ -11,8 +11,8 @@ HIGHLIGHT_FILE_EXT = '.sbot-hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
 
-# The current highlight collections. This is global across all ST instances/window/project.
-# Key is current window id, value is the collection of highlight infos.
+# The internal highlight collections. This is global across all ST instances.
+# Key is window id, value is a dict of highlight infos - fn:??.
 _hls = {}
 
 
@@ -74,7 +74,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _open_hls(self, window):
         ''' General project opener. '''
-        # slog(CAT_DBG, f'{self._store_fn}')
+        # sc.slog(CAT_DBG, f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -91,7 +91,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _save_hls(self, window):
         ''' General project saver. '''
-        # slog(CAT_DBG, f'{self._store_fn}')
+        # sc.slog(CAT_DBG, f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -195,6 +195,9 @@ def _highlight_view(view, token, whole_word, hl_index):
     escaped = re.escape(token)
     if whole_word:  # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
+
+    # json wants string keys so convert.
+    hl_index = int(hl_index)
 
     settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
     highlight_scopes = settings.get('highlight_scopes')
