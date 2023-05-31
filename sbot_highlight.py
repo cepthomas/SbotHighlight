@@ -12,11 +12,11 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
 
 # The internal highlight collections. This is global across all ST instances.
-# Key is window id, value is a dict of highlight infos - fn:??.
+# Key is window id, value is a dict of highlight infos w/key fn.
 _hls = {}
 
 
-# TODO refresh_hls cmd instead of having to close/open the view.
+# TODO Refresh highlights after editing color-scheme without having to close and reopen the view.
 
 
 #-----------------------------------------------------------------------------------
@@ -126,8 +126,6 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
     ''' Highlight specific words using scopes. Parts borrowed from StyleToken. '''
 
     def run(self, edit, hl_index):
-        highlight_scopes = _get_highlight_scopes()
-
         # Get whole word or specific span.
         region = self.view.sel()[0]
 
@@ -150,11 +148,9 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        highlight_scopes = _get_highlight_scopes()
-
-        for i, value in enumerate(highlight_scopes):
-            reg_name = sc.HIGHLIGHT_REGION_NAME % i
-            self.view.erase_regions(reg_name)
+        hl_info = sc.get_highlight_info('user')
+        for hl in hl_info:
+            self.view.erase_regions(hl.region_name)
 
         # Remove from persist collection.
         winid = self.view.window().id()
@@ -172,12 +168,10 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        highlight_scopes = _get_highlight_scopes()
-
+        hl_info = sc.get_highlight_info('user')
         for vv in self.view.window().views():
-            for i, value in enumerate(highlight_scopes):
-                reg_name = sc.HIGHLIGHT_REGION_NAME % value
-                vv.erase_regions(reg_name)
+            for hl in hl_info:
+                self.view.erase_regions(hl.region_name)
 
         # Clear collection for current window only.
         winid = self.view.window().id()
@@ -192,15 +186,15 @@ def _highlight_view(view, token, whole_word, hl_index):
     if whole_word:  # and escaped[0].isalnum():
         escaped = r'\b%s\b' % escaped
 
-    # json wants string keys so convert.
+    # json uses string keys so convert to int.
     hl_index = int(hl_index)
+    hl_info = sc.get_highlight_info('user')
 
-    highlight_scopes = _get_highlight_scopes()
-
-    if hl_index < len(highlight_scopes):
+    if hl_index < len(hl_info):
         highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
         if len(highlight_regions) > 0:
-            view.add_regions(sc.HIGHLIGHT_REGION_NAME % hl_index, highlight_regions, highlight_scopes[hl_index])
+            hl = hl_info[hl_index]
+            view.add_regions(hl.region_name, highlight_regions, hl.scope_name)
     else:
         sc.slog(sc.CAT_ERR, f'Invalid scope index {hl_index}')
 
@@ -228,12 +222,3 @@ def _get_hl_vals(view, init_empty):
             vals = _hls[winid][fn]
 
     return vals
-
-
-#-----------------------------------------------------------------------------------
-def _get_highlight_scopes():
-    ''' Get list of known scope names. These need to be supplied in your color scheme. '''
-    scopes = []
-    for i in range(6): # magical knowledge
-        scopes.append(f'markup.user_hl{i + 1}')
-    return scopes

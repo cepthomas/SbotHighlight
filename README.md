@@ -14,11 +14,11 @@ Built for ST4 on Windows and Linux.
 
 
 ## Commands
-| Command                    | Implementation | Description                   | Args                           |
-| :--------                  | :-------       | :-------                      | :--------                      |
-| sbot_highlight_text        | Context        | Highlight text                | hl_index = scope 1 - 6         |
-| sbot_clear_highlight       | Context        | Remove specific highlight     | hl_index = scope 1 - 6         |
-| sbot_clear_all_highlights  | Context        | Remove all highlights         |                                |
+| Command                    | Type     | Description                   | Args                           |
+| :--------                  | :------- | :-------                      | :--------                      |
+| sbot_highlight_text        | Context  | Highlight text                | hl_index = scope 1 - 6         |
+| sbot_clear_highlight       | Context  | Remove specific highlight     | hl_index = scope 1 - 6         |
+| sbot_clear_all_highlights  | Context  | Remove all highlights         |                                |
 
 ## Settings
 None
