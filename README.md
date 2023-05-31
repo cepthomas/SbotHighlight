@@ -5,7 +5,6 @@ Text colorizing per view with persistence per document.
 Built for ST4 on Windows and Linux.
 
 - The way ST works, you have to define which scope to use for each of the different highlights.
-- Edit the setting `highlight_scopes` to taste. The defaults are just a wild guess and you really need your own to match your scheme.
 - Note that Regions added by self.view.add_regions() can not set the foreground color. The scope color is used
     for the region background color. Also they are not available via extract_scope().
 
@@ -22,6 +21,16 @@ Built for ST4 on Windows and Linux.
 | sbot_clear_all_highlights  | Context        | Remove all highlights         |                                |
 
 ## Settings
-| Setting              | Description                                        | Options                                    |
-| :--------            | :-------                                           | :------                                    |
-| highlight_scopes     | List of up to 6 scope names for highlight commands |                                            |
+None
+
+## Colors
+You need to supply something like these in your sublime-color-scheme file:
+```
+{ "scope": "markup.user_hl1", "background": "red", "foreground": "white" },
+{ "scope": "markup.user_hl2", "background": "green", "foreground": "white" },
+{ "scope": "markup.user_hl3", "background": "blue", "foreground": "white" },
+{ "scope": "markup.user_hl4", "background": "yellow", "foreground": "black" },
+{ "scope": "markup.user_hl5", "background": "lime", "foreground": "black" },
+{ "scope": "markup.user_hl6", "background": "cyan", "foreground": "black" },
+```
+These work for all members of the sbot family.

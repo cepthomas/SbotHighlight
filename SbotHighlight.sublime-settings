@@ -1,4 +1,2 @@
 {
-    // List of up to 6 scope names for highlight commands.
-    "highlight_scopes": [ "region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish" ],
 }

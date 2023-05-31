@@ -29,7 +29,6 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         project_fn = view.window().project_file_name()
         self._store_fn = sc.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
         self._open_hls(view.window())
@@ -127,8 +126,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
     ''' Highlight specific words using scopes. Parts borrowed from StyleToken. '''
 
     def run(self, edit, hl_index):
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        highlight_scopes = settings.get('highlight_scopes')
+        highlight_scopes = _get_highlight_scopes()
 
         # Get whole word or specific span.
         region = self.view.sel()[0]
@@ -152,8 +150,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        highlight_scopes = settings.get('highlight_scopes')
+        highlight_scopes = _get_highlight_scopes()
 
         for i, value in enumerate(highlight_scopes):
             reg_name = sc.HIGHLIGHT_REGION_NAME % i
@@ -175,8 +172,7 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
         global _hls
 
         # Clear visuals in open views.
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        highlight_scopes = settings.get('highlight_scopes')
+        highlight_scopes = _get_highlight_scopes()
 
         for vv in self.view.window().views():
             for i, value in enumerate(highlight_scopes):
@@ -199,8 +195,7 @@ def _highlight_view(view, token, whole_word, hl_index):
     # json wants string keys so convert.
     hl_index = int(hl_index)
 
-    settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-    highlight_scopes = settings.get('highlight_scopes')
+    highlight_scopes = _get_highlight_scopes()
 
     if hl_index < len(highlight_scopes):
         highlight_regions = view.find_all(escaped) if whole_word else view.find_all(token, sublime.LITERAL)
@@ -233,3 +228,12 @@ def _get_hl_vals(view, init_empty):
             vals = _hls[winid][fn]
 
     return vals
+
+
+#-----------------------------------------------------------------------------------
+def _get_highlight_scopes():
+    ''' Get list of known scope names. These need to be supplied in your color scheme. '''
+    scopes = []
+    for i in range(6): # magical knowledge
+        scopes.append(f'markup.user_hl{i + 1}')
+    return scopes
