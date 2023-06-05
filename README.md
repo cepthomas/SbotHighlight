@@ -34,3 +34,7 @@ You need to supply something like these in your sublime-color-scheme file:
 { "scope": "markup.user_hl6", "background": "cyan", "foreground": "black" },
 ```
 These work for all members of the sbot family.
+See [Color customization](https://www.sublimetext.com/docs/color_schemes.html#customization).
+
+Coloring for the markup.user_hls and markup.fixed_hls only supports fore and back colors, but not font_style.
+  Also RegionFlags doesn't work in add_regions().

@@ -29,11 +29,13 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         view = views[0]
-        project_fn = view.window().project_file_name()
-        self._store_fn = sc.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
-        self._open_hls(view.window())
-        for view in views:
-            self._init_view(view)
+        w = view.window()
+        if w is not None: # view.window() is None here sometimes.
+            project_fn = w.project_file_name() 
+            self._store_fn = sc.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
+            self._open_hls(w)
+            for view in views:
+                self._init_view(view)
 
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
