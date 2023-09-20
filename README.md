@@ -5,8 +5,10 @@ Text colorizing per view with persistence per document.
 Built for ST4 on Windows and Linux.
 
 - The way ST works, you have to define which scope to use for each of the different highlights.
-- Note that Regions added by self.view.add_regions() can not set the foreground color. The scope color is used
+- Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
+- Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
     for the region background color. Also they are not available via extract_scope().
+- After editing color-scheme, close and reopen affected views.
 
 - [SbotScope](https://github.com/cepthomas/SbotScope) may be useful when picking the scopes for the colors you want.
 - Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
@@ -33,8 +35,3 @@ You need to supply something like these in your sublime-color-scheme file:
 { "scope": "markup.user_hl5", "background": "lime", "foreground": "black" },
 { "scope": "markup.user_hl6", "background": "cyan", "foreground": "black" },
 ```
-These work for all members of the sbot family.
-See [Color customization](https://www.sublimetext.com/docs/color_schemes.html#customization).
-
-Coloring for the markup.user_hls and markup.fixed_hls only supports fore and back colors, but not font_style.
-  Also RegionFlags doesn't work in add_regions().
