@@ -7,7 +7,7 @@ from . import sbot_common as sc
 
 
 # Definitions.
-HIGHLIGHT_FILE_EXT = '.sbot-hls'
+HIGHLIGHT_FILE_EXT = '.hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
 # FUTURE Reload view if file changes/saved or color scheme changes. Could be manual.
