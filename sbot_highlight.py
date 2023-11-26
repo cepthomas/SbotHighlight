@@ -10,7 +10,7 @@ from . import sbot_common as sc
 HIGHLIGHT_FILE_EXT = '.hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
-# TODOF Reload view if file changes (saved) or color-scheme changes.
+# TODO Reload view if file changes (saved) or color-scheme changes.
 
 
 # The internal highlight collections. This is global across all ST instances.
