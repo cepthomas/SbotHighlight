@@ -2,8 +2,7 @@
     { "caption": "-" },
     { "caption": "HL 1", "command": "sbot_highlight_text", "args" : {"hl_index" : "0"} },
     { "caption": "HL 2", "command": "sbot_highlight_text", "args" : {"hl_index" : "1"} },
-    {
-        "caption": "Highlight",
+    { "caption": "Highlight",
         "children":
         [
             { "caption": "HL 3", "command": "sbot_highlight_text", "args" : {"hl_index" : "2"} },
