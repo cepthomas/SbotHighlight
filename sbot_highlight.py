@@ -11,9 +11,6 @@ HIGHLIGHT_FILE_EXT = '.hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 
 
-# TODO1 Reload view if file changes (saved) or color-scheme changes. Like builtin ST does.
-
-
 # The internal highlight collections. This is global across all ST instances.
 # Key is window id, value is a dict of highlight infos w/key fn.
 _hls = {}

@@ -13,6 +13,7 @@ Built for ST4 on Windows and Linux.
 - [SbotScope](https://github.com/cepthomas/SbotScope) may be useful when picking the scopes for the colors you want.
 - Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 - Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
+- To refresh highlighting while editing, save the file.
 
 
 ## Commands
