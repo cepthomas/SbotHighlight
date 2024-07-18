@@ -15,9 +15,6 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 # Key is window id, value is a dict of highlight infos w/key fn.
 _hls = {}
 
-# view  view
-
-# view window view 
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
