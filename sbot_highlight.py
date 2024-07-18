@@ -15,6 +15,9 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 # Key is window id, value is a dict of highlight infos w/key fn.
 _hls = {}
 
+# view  view
+
+# view window view 
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
@@ -55,6 +58,11 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_load(self, view):
         ''' Load a file. '''
         self._init_view(view)
+
+    def on_pre_save(self, view):
+        w = view.window()
+        if w is not None and view.window().id() in _hls:
+            self._save_hls(view.window())
 
     def _init_view(self, view):
         ''' Lazy init. '''
