@@ -28,7 +28,10 @@ None
 
 ## Colors
 
-Add these (customized) to your `Packages\User\your.sublime-color-scheme` file:
+New scopes have been added to support this application. Adjust these to taste and add
+to your `Packages\User\your.sublime-color-scheme` file. Note that these are shared with other
+members of the sbot family.
+
 ```
 { "scope": "markup.user_hl1", "background": "red", "foreground": "white" },
 { "scope": "markup.user_hl2", "background": "green", "foreground": "white" },
