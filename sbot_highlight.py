@@ -1,15 +1,17 @@
 import os
 import re
 import json
+import logging
 import sublime
 import sublime_plugin
 from . import sbot_common as sc
 
+_logger = logging.getLogger(__name__)
+_logger.setLevel(logging.DEBUG)
 
 # Definitions.
 HIGHLIGHT_FILE_EXT = '.hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
-
 
 # The internal highlight collections. This is global across all ST instances.
 # Key is window id, value is a dict of highlight infos w/key fn.
@@ -43,7 +45,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_pre_close_project(self, window):
         ''' Save to file when closing window/project. Seems to be called twice. '''
-        # sc.slog(sc.CAT_DBG, f'|{window.id()}|{_hls}')
+        # _logger.debug(f'|{window.id()}|{_hls}')
         if window.id() in _hls:
             self._save_hls(window)
 
@@ -78,7 +80,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _open_hls(self, window):
         ''' General project opener. '''
-        # sc.slog(CAT_DBG, f'{self._store_fn}')
+        # _logger.debug(f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -95,7 +97,7 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def _save_hls(self, window):
         ''' General project saver. '''
-        # sc.slog(CAT_DBG, f'{self._store_fn}')
+        # _logger.debug(f'{self._store_fn}')
         global _hls
 
         if self._store_fn is not None:
@@ -201,7 +203,7 @@ def _highlight_view(view, token, whole_word, hl_index):
             hl = hl_info[hl_index]
             view.add_regions(hl.region_name, highlight_regions, hl.scope_name)
     else:
-        sc.slog(sc.CAT_ERR, f'Invalid scope index {hl_index}')
+        _logger.error(f'Invalid scope index {hl_index}')
 
 
 #-----------------------------------------------------------------------------------
