@@ -24,7 +24,8 @@ Built for ST4 on Windows and Linux.
 | sbot_clear_all_highlights  | Context  | Remove all highlights         |                                       |
 
 ## Settings
-None
+    // Log level: "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"
+    "log_level": "DEBUG",
 
 ## Colors
 
