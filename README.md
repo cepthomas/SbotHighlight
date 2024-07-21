@@ -1,19 +1,20 @@
-# What It Is
+# Sbot Highlight
 
 Text colorizing per view with persistence per document.
+Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for ST4 on Windows and Linux.
+
+Select some text and right click to select one of six highlight colors. Other options clear the highlights.
+To refresh highlighting while editing, save the file.
 
 - The way ST works, you have to define which scope to use for each of the different highlights.
 - Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
 - Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
     for the region background color. Also they are not available via extract_scope().
 - After editing color-scheme, close and reopen affected views.
-
 - [SbotScope](https://github.com/cepthomas/SbotScope) may be useful when picking the scopes for the colors you want.
-- Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
-- Persistence file is in `%data_dir%\Packages\User\.SbotStore`.
-- To refresh highlighting while editing, save the file.
+- Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
 
 
 ## Commands
@@ -24,8 +25,9 @@ Built for ST4 on Windows and Linux.
 | sbot_clear_all_highlights  | Context  | Remove all highlights         |                                       |
 
 ## Settings
-    // Log level: "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"
-    "log_level": "DEBUG",
+| Setting              | Description                  | Options                                      |
+| :--------            | :-------                     | :------                                      |
+| log_level            | Min level to log             | CRITICAL ERROR WARNING INFO DEBUG            |
 
 ## Colors
 
