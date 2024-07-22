@@ -1,4 +1,4 @@
 {
-    // Log level: "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"
-    "log_level": "DEBUG",
+    // Min level to log - CRITICAL ERROR WARNING INFO DEBUG
+    "log_level": "INFO",
 }
