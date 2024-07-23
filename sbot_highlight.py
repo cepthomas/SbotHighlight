@@ -17,13 +17,13 @@ _hls = {}
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     ''' Called once per plugin instance. '''
-    print(f'>>> plugin_loaded() {__package__}')
+    pass
 
 
 #-----------------------------------------------------------------------------------
 def plugin_unloaded():
     ''' Called once per plugin instance. '''
-    print(f'>>> plugin_unloaded() {__package__}')
+    pass
 
 
 #-----------------------------------------------------------------------------------
