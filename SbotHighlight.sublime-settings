@@ -1,4 +1,4 @@
 {
-    // Min level to log - CRITICAL ERROR WARNING INFO DEBUG
-    "log_level": "INFO",
+    // Min level to log - ERR WRN INF DBG TRC
+    "log_level": "INF",
 }

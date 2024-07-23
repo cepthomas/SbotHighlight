@@ -32,7 +32,7 @@ Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
 ## Settings
 | Setting              | Description                  | Options                                      |
 | :--------            | :-------                     | :------                                      |
-| log_level            | Min level to log             | CRITICAL ERROR WARNING INFO DEBUG            |
+| log_level            | Min level to log             | ERR WRN INF DBG TRC                          |
 
 ## Colors
 
