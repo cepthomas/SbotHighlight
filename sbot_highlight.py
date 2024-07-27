@@ -92,7 +92,7 @@ class HighlightEvent(sublime_plugin.EventListener):
     def _open_hls(self, window):
         ''' General project opener. '''
         # _logger.debug(f'{self._store_fn}')
-        global _hls
+        # global _hls
 
         if self._store_fn is not None:
             winid = window.id()
@@ -109,7 +109,7 @@ class HighlightEvent(sublime_plugin.EventListener):
     def _save_hls(self, window):
         ''' General project saver. '''
         # _logger.debug(f'{self._store_fn}')
-        global _hls
+        # global _hls
 
         if self._store_fn is not None:
             winid = window.id()
@@ -163,7 +163,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this file.'''
 
     def run(self, edit):
-        global _hls
+        # global _hls
 
         # Clear visuals in open views.
         hl_info = sc.get_highlight_info('user')
@@ -183,7 +183,7 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this project.'''
 
     def run(self, edit):
-        global _hls
+        # global _hls
 
         # Clear visuals in open views.
         hl_info = sc.get_highlight_info('user')
@@ -220,7 +220,7 @@ def _highlight_view(view, token, whole_word, hl_index):
 #-----------------------------------------------------------------------------------
 def _get_hl_vals(view, init_empty):
     ''' General helper to get the data values from persisted collection. If init_empty and there are none, add a default value. '''
-    global _hls
+    # global _hls
     
     vals = None  # Default
     winid = view.window().id()
