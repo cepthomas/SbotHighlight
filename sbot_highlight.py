@@ -74,6 +74,10 @@ class HighlightEvent(sublime_plugin.EventListener):
         if w is not None and view.window().id() in _hls:
             self._save_hls(view.window())
 
+    def on_post_save(self, view):
+        # Refresh highlights.
+        self._highlight_view(view)
+
     def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
@@ -82,12 +86,14 @@ class HighlightEvent(sublime_plugin.EventListener):
             vid = view.id()
             if vid not in self._views_inited:
                 self._views_inited.add(vid)
+                self._highlight_view(view)
 
-                # Init the view with any persisted values.
-                hl_vals = _get_hl_vals(view, False)
-                if hl_vals is not None:
-                    for hl_index, tparams in hl_vals.items():
-                        _highlight_view(view, tparams['token'], tparams['whole_word'], hl_index)
+    def _highlight_view(self, view):
+        ''' Colorize the view. '''
+        hl_vals = _get_hl_vals(view, False)
+        if hl_vals is not None:
+            for hl_index, tparams in hl_vals.items():
+                _highlight_view(view, tparams['token'], tparams['whole_word'], hl_index)
 
     def _open_hls(self, window):
         ''' General project opener. '''
