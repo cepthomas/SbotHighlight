@@ -30,12 +30,9 @@ Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
 | sbot_clear_all_highlights  | Context  | Remove all highlights         |                                       |
 
 ## Settings
-| Setting              | Description                  | Options                                      |
-| :--------            | :-------                     | :------                                      |
-| log_level            | Min level to log             | ERR WRN INF DBG TRC                          |
+None
 
 ## Colors
-
 New scopes have been added to support this application. Adjust these to taste and add
 to your `Packages\User\your.sublime-color-scheme` file. Note that these are also used by other
 members of the sbot family.

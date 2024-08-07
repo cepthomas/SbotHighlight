@@ -36,7 +36,6 @@ class HighlightEvent(sublime_plugin.EventListener):
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-        sc.set_log_level(settings.get('log_level'))
 
         if len(views) > 0:
             view = views[0]
