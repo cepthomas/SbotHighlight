@@ -3,12 +3,7 @@ import re
 import json
 import sublime
 import sublime_plugin
-from .SbotCommon import common as sc
-from .SbotCommon import logger as log
-from .SbotCommon.tracer import *
-
- # Initialize logging.
-log.init(sc.get_store_fn('sbot.log'))
+from . import sbot_common as sc
 
 
 # Definitions.
@@ -23,7 +18,7 @@ _hls = {}
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     '''Called per plugin instance.'''
-    log.info(f'plugin_loaded() {__package__}')
+    sc.info(f'plugin_loaded() {__package__}')
 
 
 #-----------------------------------------------------------------------------------
@@ -217,7 +212,7 @@ def _highlight_view(view, token, whole_word, hl_index):
             hl = hl_info[hl_index]
             view.add_regions(hl.region_name, highlight_regions, hl.scope_name)
     else:
-        log.error(f'Invalid scope index {hl_index}')
+        sc.error(f'Invalid scope index {hl_index}')
 
 
 #-----------------------------------------------------------------------------------
