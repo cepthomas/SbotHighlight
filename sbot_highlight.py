@@ -212,7 +212,7 @@ def _highlight_view(view, token, whole_word, hl_index):
             hl = hl_info[hl_index]
             view.add_regions(hl.region_name, highlight_regions, hl.scope_name)
     else:
-        sc.error(f'Invalid scope index {hl_index}')
+        sc.warn(f'Invalid scope index {hl_index}')
 
 
 #-----------------------------------------------------------------------------------
