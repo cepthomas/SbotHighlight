@@ -1,4 +1,4 @@
-# Sbot Highlight
+# SbotHighlight
 
 Text colorizing per view with persistence per document.
 Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
@@ -28,6 +28,26 @@ Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
 | sbot_highlight_text        | Context  | Highlight text                | hl_index: scope markup.user_hl1 - 6   |
 | sbot_clear_highlight       | Context  | Remove specific highlight     | hl_index: scope markup.user_hl1 - 6   |
 | sbot_clear_all_highlights  | Context  | Remove all highlights         |                                       |
+
+
+There is no default `Context.sublime-menu` file in this plugin.
+Add the commands you like to your own `User\Context.sublime-menu` file. Typical entries are:
+``` json
+{ "caption": "HL 1", "command": "sbot_highlight_text", "args" : {"hl_index" : "0"} },
+{ "caption": "HL 2", "command": "sbot_highlight_text", "args" : {"hl_index" : "1"} },
+{ "caption": "Highlight",
+    "children":
+    [
+        { "caption": "HL 3", "command": "sbot_highlight_text", "args" : {"hl_index" : "2"} },
+        { "caption": "HL 4", "command": "sbot_highlight_text", "args" : {"hl_index" : "3"} },
+        { "caption": "HL 5", "command": "sbot_highlight_text", "args" : {"hl_index" : "4"} },
+        { "caption": "HL 6", "command": "sbot_highlight_text", "args" : {"hl_index" : "5"} },
+        { "caption": "-" },
+        { "caption": "Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
+    ]
+},
+{ "caption": "Clear Highlights in File", "command": "sbot_clear_highlights" },
+```
 
 ## Settings
 None
