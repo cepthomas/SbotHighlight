@@ -1,4 +1,4 @@
-# SbotHighlight
+# Highlight Token
 
 Text colorizing per view with persistence per document.
 Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
