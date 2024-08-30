@@ -22,7 +22,8 @@ when picking the scopes for the colors you want.
 Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
 
 
-## Commands
+## Commands and Menus
+
 | Command                    | Type     | Description                   | Args                                  |
 | :--------                  | :------- | :-------                      | :--------                             |
 | sbot_highlight_text        | Context  | Highlight text                | hl_index: scope markup.user_hl1 - 6   |
