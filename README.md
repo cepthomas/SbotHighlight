@@ -1,34 +1,40 @@
 # Highlight Token
 
-Text colorizing per view with persistence per document.
-Loosely based on [StyleToken](https://packagecontrol.io/packages/StyleToken).
+Sublime Text plugin to do text color highlighting per document.
+Loosely based on the old [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
 Built for ST4 on Windows and Linux.
 
-Select some text and right click to select one of six highlight colors. Other options clear the highlights.
-To refresh highlighting while editing, save the file.
+## Features
 
-After editing color-scheme, you need to close and reopen affected views. Yes, I could fix that.
+- Persisted per project to `...\Packages\User\.SbotStore\<project>.hls`.
+- Select some text and right click to select one of six highlight colors. Select whole word
+  by placing the caret at the start of the word.
+- Other options clear the highlights in the current file or the whole project.
+- To refresh highlighting while editing, save the file.
+- Utilities to show colorized list of the scopes at the caret, or all scopes in the view.
+  Handy when selecting the highlight colors.
+- After editing `your.sublime-color-scheme`, refresh by close/reopen affected views. May be improved in the future.
 
-Some ST limitations:
+![ex1](ex1.png)
+
+
+Some ST quirks:
 - The way ST works, you have to define which scope to use for each of the different highlights.
 - Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
 - Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
   for the region background color. Also they are not available via extract_scope().
 
-[SublimeBagOfTricks](https://github.com/cepthomas/SublimeBagOfTricks) has a command which may be useful
-when picking the scopes for the colors you want.
-
-Persistence files are in `.../Packages/User/.SbotStore` as `*.hls`.
-
 
 ## Commands and Menus
 
-| Command                    | Type     | Description                   | Args                                  |
-| :--------                  | :------- | :-------                      | :--------                             |
-| sbot_highlight_text        | Context  | Highlight text                | hl_index: scope markup.user_hl1 - 6   |
-| sbot_clear_highlight       | Context  | Remove specific highlight     | hl_index: scope markup.user_hl1 - 6   |
-| sbot_clear_all_highlights  | Context  | Remove all highlights         |                                       |
+| Command                    | Description                      | Args                                  |
+| :--------                  | :-------                         | :--------                             |
+| sbot_highlight_text        | Highlight text                   | hl_index: scope markup.user_hl1 - 6   |
+| sbot_clear_highlights      | Remove all highlights in file    |                                       |
+| sbot_clear_all_highlights  | Remove all highlights in project |                                       |
+| sbot_scope_info            | Show scopes at caret in color    |                                       |
+| sbot_all_scopes            | Show all scopes in view in color |                                       |
 
 
 There is no default `Context.sublime-menu` file in this plugin.
@@ -44,14 +50,20 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
         { "caption": "HL 5", "command": "sbot_highlight_text", "args" : {"hl_index" : "4"} },
         { "caption": "HL 6", "command": "sbot_highlight_text", "args" : {"hl_index" : "5"} },
         { "caption": "-" },
+        { "caption": "Scope Info", "command": "sbot_scope_info" },
+        { "caption": "All Scopes", "command": "sbot_all_scopes" },
         { "caption": "Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
     ]
 },
 { "caption": "Clear Highlights in File", "command": "sbot_clear_highlights" },
 ```
 
+
 ## Settings
-None
+| Setting            | Description                              | Options                    |
+| :--------          | :-------                                 | :------                    |
+| scopes_to_show     | Scope list for sbot_all_scopes command.  |                            |
+
 
 ## Colors
 New scopes have been added to support this application. Adjust these to taste and add

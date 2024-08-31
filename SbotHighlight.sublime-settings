@@ -1,2 +1,26 @@
 {
+    // Scope list for sbot_all_scopes command. Some from MINIMAL SCOPE COVERAGE.
+    "scopes_to_show": [
+
+        "markup", "markup.underline", "markup.underline.link",
+        "markup.italic", "markup.bold", "markup.strikethrough",
+        "markup.heading", "markup.paragraph", "markup.other",
+        "markup.raw.inline", "markup.raw.block", "markup.quote",
+        "markup.list", "markup.list.unnumbered", "markup.list.numbered",
+        "markup.inserted.diff", "markup.deleted.diff",
+
+        "meta.table", "meta.table.header", "meta.link.reference",
+        
+        "comment", "comment.block", "comment.block.documentation",
+        "constant", "constant.character.escape", "constant.language", "constant.numeric",
+        "entity", "entity.name", "entity.name.section", "entity.name.tag", "entity.other", "entity.other.attribute-name", "entity.other.inherited-class",
+        "invalid", "invalid.deprecated", "invalid.illegal",
+        "keyword", "keyword.control", "keyword.declaration", "keyword.operator",
+        "variable", "variable.function", "variable.language", "variable.parameter",
+        "punctuation", "source", "storage", "storage.modifier", "storage.type",
+        "string", "string.quoted.single", "string.quoted.double",
+        "support", "text", "text.documentation",
+
+        "region.redish", "region.orangish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish", "region.pinkish",
+    ],
 }
