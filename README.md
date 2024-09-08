@@ -3,7 +3,7 @@
 Sublime Text plugin to do text color highlighting per document.
 Loosely based on the old [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
-Built for ST4 on Windows and Linux.
+Built for ST4 on Windows and Linux (lightly tested).
 
 ## Features
 
@@ -16,14 +16,8 @@ Built for ST4 on Windows and Linux.
   Handy when selecting the highlight colors.
 - After editing `your.sublime-color-scheme`, refresh by close/reopen affected views. May be improved in the future.
 
+
 ![ex1](ex1.png)
-
-
-Some ST quirks:
-- The way ST works, you have to define which scope to use for each of the different highlights.
-- Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
-- Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
-  for the region background color. Also they are not available via extract_scope().
 
 
 ## Commands and Menus
@@ -78,3 +72,13 @@ members of the sbot family.
 { "scope": "markup.user_hl5", "background": "lime", "foreground": "black" },
 { "scope": "markup.user_hl6", "background": "cyan", "foreground": "black" },
 ```
+
+## Notes
+
+Some ST quirks:
+- The way ST works, you have to define which scope to use for each of the different highlights.
+- Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
+- Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
+  for the region background color. Also they are not available via extract_scope().
+
+- Log file is in $APPDATA\Sublime Text\Packages\User\.SbotStore\sbot.log.
