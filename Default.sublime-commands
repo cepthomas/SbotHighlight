@@ -1,0 +1,5 @@
+[
+    { "caption": "Highlight Token: Clear All Highlights in File", "command": "sbot_clear_highlights" },
+    { "caption": "Highlight Token: Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
+    { "caption": "Highlight Token: Edit Settings", "command": "edit_settings", "args": { "base_file": "${packages}/SbotHighlight/SbotHighlight.sublime-settings", "default": "{\n$0\n}\n" } }
+]
