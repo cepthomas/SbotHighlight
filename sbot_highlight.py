@@ -36,8 +36,6 @@ class HighlightEvent(sublime_plugin.EventListener):
 
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
-
         if len(views) > 0:
             view = views[0]
             w = view.window()
@@ -146,6 +144,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
     ''' Highlight specific words using scopes. Parts borrowed from StyleToken. '''
 
     def run(self, edit, hl_index):
+        del edit
         # Get whole word or specific span.
         region = self.view.sel()[0]
 
@@ -165,17 +164,22 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this file.'''
 
     def run(self, edit):
+        del edit
         # Clear visuals in open views.
         hl_info = sc.get_highlight_info('user')
         for hl in hl_info:
             self.view.erase_regions(hl.region_name)
 
+        winid = self.view.window()
+
         # Remove from persist collection.
-        winid = self.view.window().id()
-        if winid in _hls:
-            fn = self.view.file_name()
-            if fn is not None and fn in _hls[winid]:
-                del _hls[winid][fn]
+        win = self.view.window()
+        if win is not None:
+            winid = win.id()
+            if winid in _hls:
+                fn = self.view.file_name()
+                if fn is not None and fn in _hls[winid]:
+                    del _hls[winid][fn]
 
 
 #-----------------------------------------------------------------------------------
@@ -183,16 +187,18 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this project.'''
 
     def run(self, edit):
-        # Clear visuals in open views.
-        hl_info = sc.get_highlight_info('user')
-        for vv in self.view.window().views():
-            for hl in hl_info:
-                self.view.erase_regions(hl.region_name)
+        del edit
+        win = self.view.window()
 
-        # Clear collection for current window only.
-        winid = self.view.window().id()
-        if winid in _hls:
-            _hls[winid] = {}
+        if win is not None:
+            # Clear visuals in open views.
+            hl_info = sc.get_highlight_info('user')
+            for _ in win.views():
+                for hl in hl_info:
+                    self.view.erase_regions(hl.region_name)
+            # Clear collection for current window only.
+            if win is not None:
+                _hls[win.id()] = {}
 
 
 #-----------------------------------------------------------------------------------
@@ -200,6 +206,7 @@ class SbotAllScopesCommand(sublime_plugin.TextCommand):
     ''' Show style info for common scopes. '''
 
     def run(self, edit):
+        del edit
         settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
         scopes = settings.get('scopes_to_show')
         _render_scopes(scopes, self.view)
@@ -210,6 +217,7 @@ class SbotScopeInfoCommand(sublime_plugin.TextCommand):
     ''' Like builtin ShowScopeNameCommand but with coloring added. '''
 
     def run(self, edit):
+        del edit
         caret = sc.get_single_caret(self.view)
         if caret is not None:
             scope = self.view.scope_name(caret).rstrip()
@@ -234,7 +242,7 @@ def _highlight_view(view, token, whole_word, hl_index):
             hl = hl_info[hl_index]
             view.add_regions(hl.region_name, highlight_regions, hl.scope_name)
     else:
-        sc.warn(f'Invalid scope index {hl_index}')
+        sc.error(f'Invalid scope index {hl_index}')
 
 
 #-----------------------------------------------------------------------------------
@@ -300,7 +308,7 @@ def _render_scopes(scopes, view):
 
     to_show = '\n'.join(scopes)
     # to_show = html
-    view.show_popup(html, max_width=512, max_height=600, on_navigate=lambda x: _copy_scopes(view, to_show))
+    view.show_popup(html, max_width=512, max_height=600, on_navigate=_copy_scopes(view, to_show))
 
 
 #-----------------------------------------------------------------------------------
