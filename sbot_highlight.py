@@ -7,136 +7,127 @@ from . import sbot_common as sc
 
 
 # Definitions.
-HIGHLIGHT_FILE_EXT = '.hls'
+# HIGHLIGHT_FILE_EXT = '.hls'
 HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
+HIGHLIGHT_STORAGE_FILE = "hls.store"
 
-# The internal highlight collections. This is global across all ST instances.
-# Key is window id, value is a dict of highlight infos w/key fn.
+# The current highlights. This is global across all ST instances/window/projects.
+# {
+#     "project file1": {
+#         "file1 with highlights": {
+#             "0": { "token": "crows", "whole_word": false },
+#             "1": { "token": "drows", "whole_word": false },
+#         },
+#         "file2 with highlights":
+#         ...
+#     },
+#     "project file2":
+#     ...
+# }
 _hls = {}
 
 
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     '''Called per plugin instance.'''
-    sc.info(f'plugin_loaded() {__package__}')
-
-
-#-----------------------------------------------------------------------------------
-def plugin_unloaded():
-    '''Ditto.'''
-    pass
+    sc.debug(f'plugin_loaded() {__package__}')
 
 
 #-----------------------------------------------------------------------------------
 class HighlightEvent(sublime_plugin.EventListener):
+    ''' React to system events.'''
 
-    # Need to track what's been initialized.
+    # Track what's been initialized.
     _views_inited = set()
-    _store_fn = None
 
     def on_init(self, views):
         ''' First thing that happens when plugin/window created. Load the persistence file. Views are valid. '''
         if len(views) > 0:
             view = views[0]
-            w = view.window()
-            if w is not None: # view.window() is None here sometimes.
-                project_fn = w.project_file_name() 
-                self._store_fn = sc.get_store_fn_for_project(project_fn, HIGHLIGHT_FILE_EXT)
-                self._open_hls(w)
+            win = view.window()
+            if win is not None:
+                project_fn = win.project_file_name()
+                self._read_store()
                 for view in views:
                     self._init_view(view)
 
     def on_load_project(self, window):
         ''' This gets called for new windows but not for the first one. '''
-        self._open_hls(window)
         for view in window.views():
             self._init_view(view)
 
     def on_pre_close_project(self, window):
-        ''' Save to file when closing window/project. Seems to be called twice. '''
-        # _logger.debug(f'|{window.id()}|{_hls}')
-        if window.id() in _hls:
-            self._save_hls(window)
-
-    def on_pre_close(self, view):
-        w = view.window()
-        if w is not None and view.window().id() in _hls:
-            self._save_hls(view.window())
+        ''' Save to file when closing window/project. '''
+        self._write_store()
 
     def on_load(self, view):
         ''' Load a file. '''
         self._init_view(view)
 
-    def on_pre_save(self, view):
-        w = view.window()
-        if w is not None and view.window().id() in _hls:
-            self._save_hls(view.window())
-
-    def on_post_save(self, view):
-        # Refresh highlights.
-        self._highlight_view(view)
-
     def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
-        if view.is_scratch() is False and fn is not None:
-            # Init the view if not already.
-            vid = view.id()
-            if vid not in self._views_inited:
-                self._views_inited.add(vid)
-                self._highlight_view(view)
+        if view.is_scratch() is True or fn is None:
+            return
+
+        project_hls = _get_project_hls(view, init=False)
+        if project_hls is None:
+            return
+
+        # Init the view if not already.
+        vid = view.id()
+        if vid not in self._views_inited:
+            self._views_inited.add(vid)
+            self._highlight_view(view)
+
+    def _read_store(self):
+        ''' General project opener. '''
+        global _hls
+
+        store_fn = sc.get_store_fn(HIGHLIGHT_STORAGE_FILE)
+        if os.path.isfile(store_fn):
+            try:
+                with open(store_fn, 'r') as fp:
+                    _temp_hls = json.load(fp)
+                    # Sanity checks. Easier to make a new clean collection rather than remove parts.
+                    _hls.clear()
+
+                    for proj_fn, proj_hls in _temp_hls.items():
+                        # print(proj_fn, proj_hls)
+                        if os.path.exists(proj_fn) and len(proj_hls) > 0:
+                            files = {}
+                            for fn, hls in proj_hls.items():
+                                # print(fn, hls)
+                                if os.path.exists(fn) and len(hls) > 0:
+                                    files[fn] = hls
+                            if len(files) > 0:
+                                _hls[proj_fn] = files
+            except Exception as e:
+                sc.error(f'Error reading {store_fn}: {e}', e.__traceback__)
+        else:  # Assume new file with default fields.
+            sublime.status_message('Creating new highlights file')
+            _hls = {}
+
+    def _write_store(self):
+        ''' General project saver. '''
+        global _hls
+
+        store_fn = sc.get_store_fn(HIGHLIGHT_STORAGE_FILE)
+
+        # print(_hls)
+
+        try:
+            with open(store_fn, 'w') as fp:
+                json.dump(_hls, fp, indent=4)
+        except Exception as e:
+            sc.error(f'Error writing {store_fn}: {e}', e.__traceback__)
 
     def _highlight_view(self, view):
         ''' Colorize the view. '''
-        hl_vals = _get_hl_vals(view, False)
+        hl_vals = _get_hl_vals(view, init=False)
         if hl_vals is not None:
             for hl_index, tparams in hl_vals.items():
                 _highlight_view(view, tparams['token'], tparams['whole_word'], hl_index)
-
-    def _open_hls(self, window):
-        ''' General project opener. '''
-        # _logger.debug(f'{self._store_fn}')
-        if self._store_fn is not None:
-            winid = window.id()
-
-            if os.path.isfile(self._store_fn):
-                with open(self._store_fn, 'r') as fp:
-                    values = json.load(fp)
-                    _hls[winid] = values
-            else:
-                # Assumes new file.
-                sublime.status_message('Creating new highlights file')
-                _hls[winid] = {}
-
-    def _save_hls(self, window):
-        ''' General project saver. '''
-        # _logger.debug(f'{self._store_fn}')
-        if self._store_fn is not None:
-            winid = window.id()
-
-            # Remove invalid files and any empty values.
-            # Safe iteration - accumulate elements to del later.
-            del_els = []
-
-            hls = _hls[winid]
-
-            for fn, _ in hls.items():
-                if fn is not None:
-                    if not os.path.exists(fn):
-                        del_els.append((winid, fn))
-                    elif len(hls[fn]) == 0:
-                        del_els.append((winid, fn))
-
-            # Now remove from collection.
-            for (w, fn) in del_els:
-                del _hls[w][fn]
-
-            # Now save, or delete if empty.
-            if len(hls) > 0:
-                with open(self._store_fn, 'w') as fp:
-                    json.dump(hls, fp, indent=4)
-            elif os.path.isfile(self._store_fn):
-                os.remove(self._store_fn)
 
 
 #-----------------------------------------------------------------------------------
@@ -153,7 +144,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
             region = self.view.word(region)
         token = self.view.substr(region)
 
-        hl_vals = _get_hl_vals(self.view, True)
+        hl_vals = _get_hl_vals(self.view, init=True)
         if hl_vals is not None:
             hl_vals[hl_index] = {"token": token, "whole_word": whole_word}
         _highlight_view(self.view, token, whole_word, hl_index)
@@ -163,21 +154,36 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this file.'''
 
+    def is_visible(self):
+        # Don't allow signets in temp views.
+        return self.view.is_scratch() is False and self.view.file_name() is not None
+
     def run(self, edit):
         del edit
-        # Clear visuals in open views.
-        hl_info = sc.get_highlight_info('user')
-        for hl in hl_info:
-            self.view.erase_regions(hl.region_name)
 
-        # Remove from persist collection.
-        win = self.view.window()
-        if win is not None:
-            winid = win.id()
-            if winid in _hls:
-                fn = self.view.file_name()
-                if fn is not None and fn in _hls[winid]:
-                    del _hls[winid][fn]
+        view = self.view
+        win = view.window()
+        fn = view.file_name()
+
+        project_hls = _get_project_hls(view, init=False)
+        if project_hls is None:
+            return  # --- early return
+
+        # Don't allow signets in temp views.
+        if view.is_scratch() is True or fn is None:
+            return
+
+        for file, hls in project_hls.items():
+            if file == fn:
+                # Remove from persist collection.
+                del project_hls[fn]
+
+                # Clear visuals in view.
+                hl_info = sc.get_highlight_info('user')
+                for hl in hl_info:
+                    view.erase_regions(hl.region_name)
+
+                break
 
 
 #-----------------------------------------------------------------------------------
@@ -188,15 +194,21 @@ class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
         del edit
         win = self.view.window()
 
-        if win is not None:
+        project_hls = _get_project_hls(self.view, init=False)
+        if project_hls is None:
+            return  # --- early return
+
+        # Bam.
+        try:
+            del _hls[self.view.window().project_file_name()]  # pyright: ignore
+        # except Exception as e:
+        #     pass
+        finally:
             # Clear visuals in open views.
             hl_info = sc.get_highlight_info('user')
-            for _ in win.views():
+            for _ in win.views():  # pyright: ignore
                 for hl in hl_info:
                     self.view.erase_regions(hl.region_name)
-            # Clear collection for current window only.
-            if win is not None:
-                _hls[win.id()] = {}
 
 
 #-----------------------------------------------------------------------------------
@@ -244,32 +256,52 @@ def _highlight_view(view, token, whole_word, hl_index):
 
 
 #-----------------------------------------------------------------------------------
-def _get_hl_vals(view, init_empty):
-    ''' General helper to get the data values from persisted collection. If init_empty and there are none, add a default value. '''
-    vals = None  # Default
-    winid = view.window().id()
+def _get_hl_vals(view, init):
+    ''' General helper to get the data values from persisted collection. If init and there are none, add a default value. '''
+    vals = None
+    win = view.window()
     fn = view.file_name()
 
-    if winid not in _hls and init_empty:
-        # Add a new one.
-        _hls[winid] = {}
+    project_hls = _get_project_hls(view, init=True)
 
-    if winid in _hls:
-        if fn not in _hls[winid]:
-            if init_empty:
+    if project_hls is not None:
+        if fn not in project_hls:
+            if init:
                 # Add a new one.
-                _hls[winid][fn] = {}
-                vals = _hls[winid][fn]
+                project_hls[fn] = {}
+                vals = project_hls[fn]
         else:
-            vals = _hls[winid][fn]
+            vals = project_hls[fn]
 
     return vals
 
 
 #-----------------------------------------------------------------------------------
+def _get_project_name(win):
+    ''' Get the project name associated with this window.'''
+    project_fn = win.project_file_name()
+    dir, fn = os.path.split(project_fn)
+    return fn.replace('.sublime-project', '')
+
+
+#-----------------------------------------------------------------------------------
+def _get_project_hls(view, init=True):
+    ''' Get the signets associated with this view or None. Option to create a new entry if missing.'''
+    win = view.window()
+    project_fn = win.project_file_name()
+    if project_fn not in _hls:
+        if init:
+            _hls[project_fn] = {}
+            return _hls[project_fn]
+        else:
+            return None
+    else:
+        return _hls[project_fn]
+
+
+#-----------------------------------------------------------------------------------
 def _render_scopes(scopes, view):
     ''' Make popup for list of scopes. '''
-
     style_text = []
     content = []
 

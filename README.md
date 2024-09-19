@@ -7,7 +7,7 @@ Built for ST4 on Windows and Linux (lightly tested).
 
 ## Features
 
-- Persisted per project to `...\Packages\User\.SbotStore\<project>.hls`.
+- Persisted per project to `...\Packages\User\.SbotStore\hls.store`.
 - Select some text and right click to select one of six highlight colors. Select whole word
   by placing the caret at the start of the word.
 - Other options clear the highlights in the current file or the whole project.
