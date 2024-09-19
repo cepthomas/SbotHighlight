@@ -170,8 +170,6 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         for hl in hl_info:
             self.view.erase_regions(hl.region_name)
 
-        winid = self.view.window()
-
         # Remove from persist collection.
         win = self.view.window()
         if win is not None:
