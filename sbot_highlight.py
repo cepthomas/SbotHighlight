@@ -93,11 +93,9 @@ class HighlightEvent(sublime_plugin.EventListener):
                     _hls.clear()
 
                     for proj_fn, proj_hls in _temp_hls.items():
-                        # print(proj_fn, proj_hls)
                         if os.path.exists(proj_fn) and len(proj_hls) > 0:
                             files = {}
                             for fn, hls in proj_hls.items():
-                                # print(fn, hls)
                                 if os.path.exists(fn) and len(hls) > 0:
                                     files[fn] = hls
                             if len(files) > 0:
@@ -113,8 +111,6 @@ class HighlightEvent(sublime_plugin.EventListener):
         global _hls
 
         store_fn = sc.get_store_fn(HIGHLIGHT_STORAGE_FILE)
-
-        # print(_hls)
 
         try:
             with open(store_fn, 'w') as fp:
@@ -287,16 +283,17 @@ def _get_project_name(win):
 #-----------------------------------------------------------------------------------
 def _get_project_hls(view, init=True):
     ''' Get the signets associated with this view or None. Option to create a new entry if missing.'''
+    hls = None
     win = view.window()
-    project_fn = win.project_file_name()
-    if project_fn not in _hls:
-        if init:
-            _hls[project_fn] = {}
-            return _hls[project_fn]
+    if win is not None:
+        project_fn = win.project_file_name()
+        if project_fn not in _hls:
+            if init:
+                _hls[project_fn] = {}
+                hls = _hls[project_fn]
         else:
-            return None
-    else:
-        return _hls[project_fn]
+            hls = _hls[project_fn]
+    return hls
 
 
 #-----------------------------------------------------------------------------------
