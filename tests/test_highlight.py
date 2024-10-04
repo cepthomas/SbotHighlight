@@ -1,18 +1,23 @@
 import sys
 import os
-import platform
-import pdb
 import unittest
 from unittest.mock import MagicMock
 
-import sublime
-import sublime_plugin
+# Add path to code under test.
+test_path = os.path.join(os.path.dirname(__file__), '..')
+if test_path not in sys.path:
+      sys.path.insert(0, test_path)
 
-from . import sbot_common as sc
-from SbotFormat import sbot_format
-from SbotHighlight import sbot_highlight
-from Notr import notr, table
+# Now import the sublime emulation.
+import emu_sublime
+import emu_sublime_plugin
+sys.modules["sublime"] = emu_sublime
+sys.modules["sublime_plugin"] = emu_sublime_plugin
 
+# Now import the code under test.
+import sbot_highlight
+
+import sbot_common as sc
 
 #-----------------------------------------------------------------------------------
 class TestHighlight(unittest.TestCase):
