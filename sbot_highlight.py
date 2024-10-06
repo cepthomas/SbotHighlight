@@ -3,7 +3,12 @@ import re
 import json
 import sublime
 import sublime_plugin
-from . import sbot_common as sc
+
+# Kludge to make testing work.
+try:
+    import sbot_common as sc
+except:
+    from . import sbot_common as sc
 
 
 # Definitions.

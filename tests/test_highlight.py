@@ -12,20 +12,20 @@ import sbot_common as sc
 
 
 #-----------------------------------------------------------------------------------
-class TestHighlight(unittest.TestCase):
+class TestHighlight(unittest.TestCase):  # TODOT more tests
 
     def setUp(self):
         mock_settings = {
             "highlight_scopes": ["region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish"],
         }
-        sublime.load_settings = MagicMock(return_value=mock_settings)
+        emu.load_settings = MagicMock(return_value=mock_settings)
 
     def tearDown(self):
         pass
 
     def test_simple(self):
-        window = sublime.Window(900)
-        view = sublime.View(901)
+        window = emu.Window(900)
+        view = emu.View(901)
 
         view.window = MagicMock(return_value=window)
         view.file_name = MagicMock(return_value='file123.abc')
