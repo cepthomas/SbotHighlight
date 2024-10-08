@@ -3,6 +3,7 @@ import os
 import unittest
 from unittest.mock import MagicMock
 
+
 # Set up the sublime emulation environment.
 import emu_sublime_api as emu
 
@@ -18,7 +19,7 @@ class TestHighlight(unittest.TestCase):  # TODOT more tests
         mock_settings = {
             "highlight_scopes": ["region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish"],
         }
-        emu.load_settings = MagicMock(return_value=mock_settings)
+        emu._settings = mock_settings
 
     def tearDown(self):
         pass
@@ -27,8 +28,8 @@ class TestHighlight(unittest.TestCase):  # TODOT more tests
         window = emu.Window(900)
         view = emu.View(901)
 
-        view.window = MagicMock(return_value=window)
-        view.file_name = MagicMock(return_value='file123.abc')
+        view._window = window
+        view._file_name = 'file123.abc'
 
         # Do the test.
         hl_vals = sbot_highlight._get_hl_vals(view, True)
