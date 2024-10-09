@@ -1,7 +1,7 @@
 import sys
 import os
 import unittest
-from unittest.mock import MagicMock
+# from unittest.mock import MagicMock
 
 
 # Set up the sublime emulation environment.
