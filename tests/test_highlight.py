@@ -1,8 +1,7 @@
 import sys
 import os
 import unittest
-# from unittest.mock import MagicMock
-
+from unittest.mock import MagicMock
 
 # Set up the sublime emulation environment.
 import emu_sublime_api as emu
@@ -19,11 +18,12 @@ class TestHighlight(unittest.TestCase):  # TODOT more tests
         mock_settings = {
             "highlight_scopes": ["region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish"],
         }
-        emu._settings = mock_settings
+        emu.set_settings(mock_settings)
 
     def tearDown(self):
         pass
 
+    #------------------------------------------------------------
     def test_simple(self):
         window = emu.Window(900)
         view = emu.View(901)

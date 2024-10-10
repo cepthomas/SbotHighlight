@@ -3,12 +3,10 @@ import re
 import json
 import sublime
 import sublime_plugin
-
-# Kludge to make testing work.
 try:
-    import sbot_common as sc
+    from . import sbot_common as sc  # normal import
 except:
-    from . import sbot_common as sc
+    import sbot_common as sc  # unittest import
 
 
 # Definitions.
@@ -17,19 +15,19 @@ HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
 HIGHLIGHT_STORAGE_FILE = "hls.store"
 
 # The current highlights. This is global across all ST instances/window/projects.
+_hls = {}
 # {
-#     "project file1": {
-#         "file1 with highlights": {
+#     "my.sublime-project": {
+#         "file_with_signets_1.ext": {
 #             "0": { "token": "crows", "whole_word": false },
 #             "1": { "token": "drows", "whole_word": false },
 #         },
-#         "file2 with highlights":
+#         "file_with_signets_1.ext":
 #         ...
 #     },
 #     "project file2":
 #     ...
 # }
-_hls = {}
 
 
 #-----------------------------------------------------------------------------------
