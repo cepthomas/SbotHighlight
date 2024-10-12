@@ -77,10 +77,10 @@ members of the sbot family.
 
 - Some ST quirks:
   - The way ST works, you have to define which scope to use for each of the different highlights.
-  - Coloring for markup.user_hls only supports fore and back colors, unfortunately not font_style.
-  - Regions added by self.view.add_regions() cannot set the foreground color. The scope color is used
-    for the region background color. Also they are not available via extract_scope().
+  - Coloring for `markup.user_hls` only supports fore and back colors, unfortunately not font_style.
+  - Regions added by `self.view.add_regions()`` cannot set the foreground color. The scope color is used
+    for the region background color. Also they are not available via `extract_scope()``.
 
 - `sbot_common.py` contains miscellaneous common components primarily for internal use by the sbot family.
   This includes a very simple logger primarily for user-facing information, syntax errors and the like.
-  Log file is in $APPDATA\Sublime Text\Packages\User\.SbotStore\sbot.log.
+  Log file is in `$APPDATA\Sublime Text\Packages\User\.SbotStore\sbot.log`.
