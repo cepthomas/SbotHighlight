@@ -3,11 +3,11 @@
 Sublime Text plugin to do text color highlighting per document.
 Loosely based on the old [StyleToken](https://packagecontrol.io/packages/StyleToken).
 
-Built for ST4 on Windows and Linux (lightly tested).
+Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - PRs welcome.
 
 ## Features
 
-- Persisted per project to `...\Packages\User\.SbotStore\hls.store`.
+- Persisted per project to `...\Packages\User\HighlightToken\HighlightToken.store`.
 - Select some text and right click to select one of six highlight colors. Select whole word
   by placing the caret at the start of the word.
 - Other options clear the highlights in the current file or the whole project.
@@ -83,4 +83,4 @@ members of the sbot family.
 
 - `sbot_common.py` contains miscellaneous common components primarily for internal use by the sbot family.
   This includes a very simple logger primarily for user-facing information, syntax errors and the like.
-  Log file is in `$APPDATA\Sublime Text\Packages\User\.SbotStore\sbot.log`.
+  Log file is in `$APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.log`.
