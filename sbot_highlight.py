@@ -9,11 +9,6 @@ except:
     import sbot_common as sc  # unittest import
 
 
-# Definitions.
-# HIGHLIGHT_FILE_EXT = '.hls'
-HIGHLIGHT_SETTINGS_FILE = "SbotHighlight.sublime-settings"
-HIGHLIGHT_STORAGE_FILE = "hls.store"
-
 # The current highlights. This is global across all ST instances/window/projects.
 _hls = {}
 # {
@@ -33,6 +28,7 @@ _hls = {}
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     '''Called per plugin instance.'''
+    sc.init('HighlightToken')
     sc.debug(f'plugin_loaded() {__package__}')
 
 
@@ -87,7 +83,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' General project opener. '''
         global _hls
 
-        store_fn = sc.get_store_fn(HIGHLIGHT_STORAGE_FILE)
+        store_fn = sc.get_store_fn()
         if os.path.isfile(store_fn):
             try:
                 with open(store_fn, 'r') as fp:
@@ -113,7 +109,7 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' General project saver. '''
         global _hls
 
-        store_fn = sc.get_store_fn(HIGHLIGHT_STORAGE_FILE)
+        store_fn = sc.get_store_fn()
 
         try:
             with open(store_fn, 'w') as fp:
@@ -216,7 +212,7 @@ class SbotAllScopesCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         del edit
-        settings = sublime.load_settings(HIGHLIGHT_SETTINGS_FILE)
+        settings = sublime.load_settings(sc.get_settings_fn())
         scopes = settings.get('scopes_to_show')
         _render_scopes(scopes, self.view)
 
