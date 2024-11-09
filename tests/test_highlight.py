@@ -15,6 +15,7 @@ import sbot_common as sc
 class TestHighlight(unittest.TestCase):  # TODOT more tests
 
     def setUp(self):
+        sc.init('_Test')
         mock_settings = {
             "highlight_scopes": ["region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish"],
         }
