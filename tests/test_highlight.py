@@ -8,14 +8,13 @@ import emu_sublime_api as emu
 
 # Import the code under test.
 import sbot_highlight
-import sbot_common as sc
+# import sbot_common as sc
 
 
 #-----------------------------------------------------------------------------------
 class TestHighlight(unittest.TestCase):  # TODOT more tests
 
     def setUp(self):
-        # sc.init('_Test')
         mock_settings = {
             "highlight_scopes": ["region.redish", "region.yellowish", "region.greenish", "region.cyanish", "region.bluish", "region.purplish"],
         }

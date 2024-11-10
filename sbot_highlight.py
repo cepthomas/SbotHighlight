@@ -28,7 +28,6 @@ _hls = {}
 #-----------------------------------------------------------------------------------
 def plugin_loaded():
     '''Called per plugin instance.'''
-    sc.init('HighlightToken')
     sc.debug(f'plugin_loaded() {__package__}')
 
 
