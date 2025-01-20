@@ -56,7 +56,7 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
 ## Settings
 | Setting            | Description                              | Options                    |
 | :--------          | :-------                                 | :------                    |
-| scopes_to_show     | Scope list for sbot_all_scopes command.  |                            |
+| scopes_to_show     | Extra scopes to show besides default.    |                            |
 
 
 ## Colors

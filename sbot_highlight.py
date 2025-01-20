@@ -8,6 +8,7 @@ try:
 except:
     import sbot_common as sc  # unittest import
 
+# FUTURE Update pkg control for all platforms.
 
 # The current highlights. This is global across all ST instances/window/projects.
 _hls = {}
@@ -23,6 +24,47 @@ _hls = {}
 #     "project file2":
 #     ...
 # }
+
+
+
+# Predefined scopes to display.
+_notr_scopes = [
+    "text.notr", "markup.bold.notr", "markup.directive.notr", "markup.heading.content.notr", "markup.heading.notr", 
+    "markup.heading.tags.notr", "markup.hrule.notr", "markup.italic.notr", "markup.link.name.notr", 
+    "markup.link.refname.notr", "markup.link.tags.notr", "markup.link.target.notr", "markup.list.indent.notr", 
+    "markup.list.marker.dash.notr", "markup.list.marker.exclmation.notr", "markup.list.marker.plus.notr", 
+    "markup.list.marker.question.notr", "markup.list.marker.x.notr", "markup.quote.notr", 
+    "markup.raw.block.notr", "markup.raw.inline.notr", "markup.strikethrough.notr", "markup.underline.notr", 
+    "punctuation.definition.block.begin.notr", "punctuation.definition.block.end.notr",
+]
+
+_internal_scopes = [
+    "markup.user_hl1", "markup.user_hl2", "markup.user_hl3", "markup.user_hl4", "markup.user_hl5",
+    "markup.user_hl6", "markup.fixed_hl1", "markup.fixed_hl2", "markup.fixed_hl3",
+]
+
+_markup_scopes = [
+    "markup", "markup.underline", "markup.underline.link",
+    "markup.italic", "markup.bold", "markup.strikethrough",
+    "markup.heading", "markup.paragraph", "markup.quote", "markup.list", 
+    "markup.inserted.diff", "markup.deleted.diff",
+    "meta.table", "meta.table.header", "meta.link.reference",
+]
+
+_syntax_scopes = [
+    "comment", "comment.block", "comment.block.documentation",
+    "constant", "entity", "entity.name", "entity.name.section", "invalid", 
+    "keyword", "keyword.control", "keyword.declaration", "keyword.operator",
+    "variable", "variable.function", "variable.language", "variable.parameter",
+    "storage", "storage.modifier", "storage.type",
+    "string", "string.quoted.single", "string.quoted.double",
+    "text", "text.documentation",
+]
+
+_generic_colors_scopes = [
+    "region.redish", "region.orangish", "region.yellowish", "region.greenish", "region.cyanish",
+    "region.bluish", "region.purplish", "region.pinkish",
+]
 
 
 #-----------------------------------------------------------------------------------
@@ -211,10 +253,20 @@ class SbotAllScopesCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
         del edit
-        settings = sublime.load_settings(sc.get_settings_fn())
-        scopes = settings.get('scopes_to_show')
-        _render_scopes(scopes, self.view)
+        scopes = []
 
+        if (self.view.file_name() is not None and self.view.syntax() is not None and self.view.syntax().name == 'Notr'):
+            scopes.extend(_notr_scopes)
+        scopes.extend(_markup_scopes)
+        scopes.extend(_internal_scopes)
+        scopes.extend(_syntax_scopes)
+        scopes.extend(_generic_colors_scopes)
+        # User requests?
+        settings = sublime.load_settings(sc.get_settings_fn())
+        extra_scopes = settings.get('scopes_to_show')
+        scopes.extend(extra_scopes)  # pyright: ignore
+
+        _render_scopes(scopes, self.view)
 
 #-----------------------------------------------------------------------------------
 class SbotScopeInfoCommand(sublime_plugin.TextCommand):
@@ -328,18 +380,22 @@ def _render_scopes(scopes, view):
 <style> p {{ margin: 0em; }} {st} </style>
 {ct}
 </body>
-<a href="_copy_scopes">Copy</a>
+<a href="copy_scopes">Copy To Clipboard</a>
 '''
 
     to_show = '\n'.join(scopes)
-    # to_show = html
-    view.show_popup(html, max_width=512, max_height=600, on_navigate=_copy_scopes(view, to_show))
 
+    # Callback
+    def nav(href):
+        ''' Copy to clipboard. '''
+        cp_html = f'''
+<body>
+<style> p {{ margin: 0em; }} {st} </style>
+{ct}
+</body>
+'''
+        sublime.set_clipboard(cp_html) # or to_show
+        view.hide_popup()
+        sublime.status_message('Scopes copied to clipboard')
 
-#-----------------------------------------------------------------------------------
-def _copy_scopes(view, scopes):
-    ''' Copy to clipboard. '''
-
-    sublime.set_clipboard(scopes)
-    view.hide_popup()
-    sublime.status_message('Scope names copied to clipboard')
+    view.show_popup(html, max_width=512, max_height=600, on_navigate=nav)
