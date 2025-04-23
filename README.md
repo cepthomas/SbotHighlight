@@ -84,3 +84,6 @@ members of the sbot family.
 - `sbot_common.py` contains miscellaneous common components primarily for internal use by the sbot family.
   This includes a very simple logger primarily for user-facing information, syntax errors and the like.
   Log file is in `$APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.log`.
+  
+- If you pull the source it must be in a directory named `Highlight Token` rather than the repo name.
+  This is to satisfy PackageControl naming requirements.
