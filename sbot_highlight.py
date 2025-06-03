@@ -106,6 +106,10 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' Load a file. '''
         self._init_view(view)
 
+    def on_post_save(self, view):
+        ''' Save a file, refresh. '''
+        self._highlight_view(view)
+
     def _init_view(self, view):
         ''' Lazy init. '''
         fn = view.file_name()
