@@ -329,14 +329,6 @@ def _get_hl_vals(view, init):
 
 
 #-----------------------------------------------------------------------------------
-def _get_project_name(win):
-    ''' Get the project name associated with this window.'''
-    project_fn = win.project_file_name()
-    dir, fn = os.path.split(project_fn)
-    return fn.replace('.sublime-project', '')
-
-
-#-----------------------------------------------------------------------------------
 def _get_project_hls(view, init=True):
     ''' Get the signets associated with this view or None. Option to create a new entry if missing.'''
     hls = None
