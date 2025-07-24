@@ -8,9 +8,7 @@ try:
 except:
     import sbot_common as sc  # unittest import
 
-# TODO Need whole-word setting.
-
-# TODO Update pkg control for all platforms.
+# TODO Whole-word option.
 
 # The current highlights. This is global across all ST instances/window/projects.
 _hls = {}
