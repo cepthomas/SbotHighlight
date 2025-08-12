@@ -12,7 +12,7 @@ import sbot_highlight
 
 
 #-----------------------------------------------------------------------------------
-class TestHighlight(unittest.TestCase):  # TODO1 more tests
+class TestHighlight(unittest.TestCase):  # TODO tests
 
     def setUp(self):
         mock_settings = {
