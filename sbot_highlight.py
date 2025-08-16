@@ -4,13 +4,8 @@ import re
 import json
 import sublime
 import sublime_plugin
-
-# my_path = os.path.dirname(__file__)
-# if my_path not in sys.path: sys.path.insert(0, my_path)
-
 from . import sbot_common as sc
 
-print('>>>', sc._friendly_name, sc.get_settings_fn())
 
 # TODO Whole-word option.
 
