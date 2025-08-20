@@ -346,6 +346,7 @@ def _render_scopes(scopes, view):
     ''' Make popup for list of scopes. '''
     style_text = []
     content = []
+    short_content = []
 
     for scope in scopes:
         style = view.style_for_scope(scope)
@@ -365,11 +366,14 @@ def _render_scopes(scopes, view):
         i = len(style_text)
         style_text.append(f'.st{i} {props}')
         content.append(f'<p><span class=st{i}>{scope}  {props2}</span></p>')
+        short_content.append(f'{scope}  {props2}')
 
     # Do popup
     st = '\n'.join(style_text)
     ct = '\n'.join(content)
+    sc = '\n'.join(short_content)
 
+    # Html for popup.
     html = f'''
 <body>
 <style> p {{ margin: 0em; }} {st} </style>
@@ -383,13 +387,16 @@ def _render_scopes(scopes, view):
     # Callback
     def nav(href):
         ''' Copy to clipboard. '''
-        cp_html = f'''
+        to_html = f'''
 <body>
 <style> p {{ margin: 0em; }} {st} </style>
 {ct}
 </body>
 '''
-        sublime.set_clipboard(cp_html) # cp_html or to_show
+
+        # sublime.set_clipboard(to_html)
+        # sublime.set_clipboard(to_show)
+        sublime.set_clipboard(sc)
         view.hide_popup()
         sublime.status_message('Scopes copied to clipboard')
 
