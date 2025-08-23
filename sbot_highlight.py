@@ -7,8 +7,6 @@ import sublime_plugin
 from . import sbot_common as sc
 
 
-# TODO Whole-word option.
-
 # The current highlights. This is global across all ST instances/window/projects.
 _hls = {}
 # {
