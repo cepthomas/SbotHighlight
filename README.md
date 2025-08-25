@@ -61,8 +61,8 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
 
 ## Colors
 New scopes have been added to support this application. Adjust these to taste and add
-to your `Packages\User\your.sublime-color-scheme` file. Note that these are also used by other
-members of the sbot family.
+to your `Packages\User\your.sublime-color-scheme` file.
+Note that these are shared with the `Notr` and `Render View` packages.
 
 ```json
 { "scope": "markup.user_hl1", "background": "red", "foreground": "white" },
