@@ -27,6 +27,7 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
 | sbot_highlight_text        | Highlight text                   | hl_index: scope markup.user_hl1 - 6   |
 | sbot_clear_highlights      | Remove all highlights in file    |                                       |
 | sbot_clear_all_highlights  | Remove all highlights in project |                                       |
+| sbot_current_highlights    | Show current file highlights     |                                       |
 | sbot_scope_info            | Show scopes at caret in color    |                                       |
 | sbot_all_scopes            | Show all scopes in view in color |                                       |
 
@@ -44,9 +45,10 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
         { "caption": "HL 5", "command": "sbot_highlight_text", "args" : {"hl_index" : "4"} },
         { "caption": "HL 6", "command": "sbot_highlight_text", "args" : {"hl_index" : "5"} },
         { "caption": "-" },
+        { "caption": "Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
+        { "caption": "Current Highlights", "command": "sbot_current_highlights" },
         { "caption": "Scope Info", "command": "sbot_scope_info" },
         { "caption": "All Scopes", "command": "sbot_all_scopes" },
-        { "caption": "Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
     ]
 },
 { "caption": "Clear Highlights in File", "command": "sbot_clear_highlights" },

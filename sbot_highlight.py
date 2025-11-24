@@ -6,22 +6,11 @@ import sublime
 import sublime_plugin
 from . import sbot_common as sc
 
+# TODO utility to display current highlights.
 
 # The current highlights. This is global across all ST instances/window/projects.
+# See $APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.store --- TODO debug to view store/settings...
 _hls = {}
-# {
-#     "my.sublime-project": {
-#         "file_with_signets_1.ext": {
-#             "0": { "token": "crows", "whole_word": false },
-#             "1": { "token": "drows", "whole_word": false },
-#         },
-#         "file_with_signets_1.ext":
-#         ...
-#     },
-#     "project file2":
-#     ...
-# }
-
 
 
 # Predefined scopes to display.
@@ -283,6 +272,48 @@ class SbotScopeInfoCommand(sublime_plugin.TextCommand):
 
 
 #-----------------------------------------------------------------------------------
+class SbotCurrentHighlightsCommand(sublime_plugin.TextCommand):
+    ''' Show style info for current highlights. '''
+
+    def run(self, edit):
+        del edit
+        scopes = []
+        content = []
+        style_text = []
+
+        # Current highlights.
+        hl_vals = _get_hl_vals(self.view, init=False)
+        if hl_vals is not None:
+            for hl_index, tparams in hl_vals.items():
+                iind = int(hl_index)
+                scope = _internal_scopes[iind]
+                style = self.view.style_for_scope(scope)
+                props = f'{{ color:{style["foreground"]}; '
+                if 'background' in style:
+                    props += f'background-color:{style["background"]}; '
+                props += '}'
+
+                i = len(style_text)
+                style_text.append(f'.st{i} {props}')
+                token = tparams['token']
+                content.append(f'<p><span class=st{i}>HL {iind + 1}: [{token}]</span></p>')
+
+        # Do popup
+        st = '\n'.join(style_text)
+        ct = '\n'.join(content)
+
+        # Html for popup.
+        html = f'''
+    <body>
+    <style> p {{ margin: 0em; }} {st} </style>
+    {ct}
+    </body>
+    '''
+
+        self.view.show_popup(html, max_width=512, max_height=600)
+
+
+#-----------------------------------------------------------------------------------
 def _highlight_view(view, token, whole_word, hl_index):
     ''' Colorize one token. '''
     escaped = re.escape(token)
@@ -325,7 +356,7 @@ def _get_hl_vals(view, init):
 
 #-----------------------------------------------------------------------------------
 def _get_project_hls(view, init=True):
-    ''' Get the signets associated with this view or None. Option to create a new entry if missing.'''
+    ''' Get the higlights associated with this view or None. Option to create a new entry if missing.'''
     hls = None
     win = view.window()
     if win is not None:
