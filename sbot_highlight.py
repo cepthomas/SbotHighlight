@@ -6,10 +6,9 @@ import sublime
 import sublime_plugin
 from . import sbot_common as sc
 
-# TODO utility to display current highlights.
 
 # The current highlights. This is global across all ST instances/window/projects.
-# See $APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.store --- TODO debug to view store/settings...
+# See $APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.store
 _hls = {}
 
 
