@@ -296,6 +296,8 @@ class SbotCurrentHighlightsCommand(sublime_plugin.TextCommand):
                 style_text.append(f'.st{i} {props}')
                 token = tparams['token']
                 content.append(f'<p><span class=st{i}>HL {iind + 1}: [{token}]</span></p>')
+        else:
+            content.append(f'<b>No Highlights</b>')
 
         # Do popup
         st = '\n'.join(style_text)
