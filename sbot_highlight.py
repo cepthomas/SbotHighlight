@@ -8,7 +8,7 @@ from . import sbot_common as sc
 
 
 # The current highlights. This is global across all ST instances/window/projects.
-# See $APPDATA\Sublime Text\Packages\User\HighlightToken\HighlightToken.store
+# See Packages/User/HighlightToken/HighlightToken.store
 _hls = {}
 
 
