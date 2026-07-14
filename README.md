@@ -7,11 +7,11 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
 
 ## Features
 
-- Persisted per project to `...\Packages\User\HighlightToken\HighlightToken.store`.
 - Select some text and right click to select one of six highlight colors. Select whole word
   by placing the caret at the start of the word.
-- Other options clear the highlights in the current file or the whole project.
+- Other options clear the highlights in the current file or all.
 - To refresh highlighting while editing, save the file.
+- Persisted to `...\Packages\User\HighlightToken\HighlightToken.store`.
 - Utilities to show colorized list of the scopes at the caret, or all scopes in the view.
   Handy when selecting the highlight colors.
 - After editing `your.sublime-color-scheme`, refresh by close/reopen affected views. May be improved in the future.
@@ -25,8 +25,8 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
 | Command                    | Description                      | Args                                  |
 | :--------                  | :-------                         | :--------                             |
 | sbot_highlight_text        | Highlight text                   | hl_index: scope markup.user_hl1 - 6   |
-| sbot_clear_highlights      | Remove all highlights in file    |                                       |
-| sbot_clear_all_highlights  | Remove all highlights in project |                                       |
+| sbot_clear_highlights      | Remove highlights in file        |                                       |
+| sbot_clear_all_highlights  | Remove all highlights            |                                       |
 | sbot_current_highlights    | Show current file highlights     |                                       |
 | sbot_scope_info            | Show scopes at caret in color    |                                       |
 | sbot_all_scopes            | Show all scopes in view in color |                                       |
@@ -45,13 +45,13 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
         { "caption": "HL 5", "command": "sbot_highlight_text", "args" : {"hl_index" : "4"} },
         { "caption": "HL 6", "command": "sbot_highlight_text", "args" : {"hl_index" : "5"} },
         { "caption": "-" },
-        { "caption": "Clear All Highlights in Project", "command": "sbot_clear_all_highlights" },
+        { "caption": "Clear All Highlights", "command": "sbot_clear_all_highlights" },
         { "caption": "Current Highlights", "command": "sbot_current_highlights" },
         { "caption": "Scope Info", "command": "sbot_scope_info" },
         { "caption": "All Scopes", "command": "sbot_all_scopes" },
     ]
 },
-{ "caption": "Clear Highlights in File", "command": "sbot_clear_highlights" },
+{ "caption": "Clear File Highlights", "command": "sbot_clear_highlights" },
 ```
 
 
