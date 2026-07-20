@@ -71,7 +71,6 @@ class HighlightEvent(sublime_plugin.EventListener):
             view = views[0]
             win = view.window()
             if win is not None:
-#                project_fn = win.project_file_name()
                 self._read_store()
                 for view in views:
                     self._init_view(view)
@@ -192,7 +191,6 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
 #-----------------------------------------------------------------------------------
 class SbotClearAllHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all files. TODO Ask if ok? '''
-#    ''' Clear all in this project.'''
 
     def run(self, edit):
         del edit
