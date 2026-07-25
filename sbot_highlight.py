@@ -7,6 +7,8 @@ import sublime_plugin
 from . import sbot_common as sc
 
 
+# TODO Remove individual highlight in file.
+
 # The current highlights. This is global across all ST instances/window/projects.
 # See Packages/User/HighlightToken/HighlightToken.store
 _hls = {}
