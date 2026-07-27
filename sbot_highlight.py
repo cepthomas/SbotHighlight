@@ -161,7 +161,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
 
 #-----------------------------------------------------------------------------------
-class SbotClearFileHighlightsCommand(sublime_plugin.TextCommand):
+class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this file.'''
 
     def is_visible(self):

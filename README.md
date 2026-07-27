@@ -29,7 +29,7 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
 | sbot_clear_all_highlights  | Remove all highlights            |                                       |
 | sbot_current_highlights    | Show current file highlights     |                                       |
 | sbot_scope_info            | Show scopes at caret in color    |                                       |
-| sbot_all_scopes            | Show all scopes in view in color |                                       |
+| sbot_all_scopes            | Show all scopes in view          |                                       |
 
 
 There is no default `Context.sublime-menu` file in this plugin.
