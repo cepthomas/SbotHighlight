@@ -161,7 +161,7 @@ class SbotHighlightTextCommand(sublime_plugin.TextCommand):
 
 
 #-----------------------------------------------------------------------------------
-class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
+class SbotClearFileHighlightsCommand(sublime_plugin.TextCommand):
     ''' Clear all in this file.'''
 
     def is_visible(self):
@@ -172,12 +172,7 @@ class SbotClearHighlightsCommand(sublime_plugin.TextCommand):
         del edit
 
         view = self.view
-        win = view.window()
         fn = view.file_name()
-
-        # Don't allow highlights in temp views.
-        if view.is_scratch() is True or fn is None:
-            return
 
         for file, hls in _hls.items():
             if file == fn:
