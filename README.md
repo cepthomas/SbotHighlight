@@ -11,7 +11,7 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
   by placing the caret at the start of the word.
 - Other options clear the highlights in the current file or all.
 - To refresh highlighting while editing, save the file.
-- Persisted to `...\Packages\User\HighlightToken\HighlightToken.store`.
+- Persisted to `.../Packages/User/HighlightToken/HighlightToken.store`.
 - Utilities to show colorized list of the scopes at the caret, or all scopes in the view.
   Handy when selecting the highlight colors.
 - After editing `your.sublime-color-scheme`, refresh by close/reopen affected views. May be improved in the future.
@@ -33,7 +33,7 @@ Built for ST4 on Windows. Linux and OSX should be ok but are minimally tested - 
 
 
 There is no default `Context.sublime-menu` file in this plugin.
-Add the commands you like to your own `User\Context.sublime-menu` file. Typical entries are:
+Add the commands you like to your own `User/Context.sublime-menu` file. Typical entries are:
 ``` json
 { "caption": "HL 1", "command": "sbot_highlight_text", "args" : {"hl_index" : "0"} },
 { "caption": "HL 2", "command": "sbot_highlight_text", "args" : {"hl_index" : "1"} },
@@ -63,7 +63,7 @@ Add the commands you like to your own `User\Context.sublime-menu` file. Typical 
 
 ## Colors
 New scopes have been added to support this application. Adjust these to taste and add
-to your `Packages\User\your.sublime-color-scheme` file.
+to your `Packages/User/your.sublime-color-scheme` file.
 Note that these are shared with the `Notr` and `Render View` packages.
 
 ```json
@@ -85,7 +85,7 @@ Note that these are shared with the `Notr` and `Render View` packages.
 
 - `sbot_common.py` contains miscellaneous common components primarily for internal use by the sbot family.
   This includes a very simple logger primarily for user-facing information, syntax errors and the like.
-  Log file is in `<ST_PACKAGES_DIR>\User\HighlightToken\HighlightToken.log`.
+  Log file is in `<ST_PACKAGES_DIR>/User/HighlightToken/HighlightToken.log`.
   
 - If you pull the source it must be in a directory named `Highlight Token` rather than the repo name.
   This is to satisfy PackageControl naming requirements.
