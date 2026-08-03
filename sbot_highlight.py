@@ -105,32 +105,17 @@ class HighlightEvent(sublime_plugin.EventListener):
         ''' General project opener. '''
         global _hls
 
-        store_fn = sc.get_store_fn()
-        if os.path.isfile(store_fn):
-            try:
-                with open(store_fn, 'r') as fp:
-                    _temp_hls = json.load(fp)
-                    # Sanity checks. Easier to make a new clean collection rather than remove parts.
-                    _hls.clear()
+        _temp_hls = sc.read_store()
 
-                    for fn, hls in _temp_hls.items():
-                        if os.path.exists(fn) and len(hls) > 0:
-                            _hls[fn] = hls
-            except Exception as e:
-                sc.error(f'Error reading {store_fn}: {e}', e.__traceback__)
-        else:  # Assume new file with default fields.
-            sublime.status_message('Creating new highlights file')
-            _hls = {}
+        # Sanity checks. Easier to make a new clean collection rather than remove parts.
+        _hls.clear()
+        for fn, hls in _temp_hls.items():
+            if os.path.exists(fn) and len(hls) > 0:
+                _hls[fn] = hls
 
     def _write_store(self):
         ''' General project saver. '''
-        global _hls
-        store_fn = sc.get_store_fn()
-        try:
-            with open(store_fn, 'w') as fp:
-                json.dump(_hls, fp, indent=4)
-        except Exception as e:
-            sc.error(f'Error writing {store_fn}: {e}', e.__traceback__)
+        sc.write_store(_hls)
 
     def _highlight_view(self, view):
         ''' Colorize the view. '''
