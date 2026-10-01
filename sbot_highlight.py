@@ -4,10 +4,12 @@ import re
 import json
 import sublime
 import sublime_plugin
+import html
 from . import sbot_common as sc
 
 
-# TODO Remove individual highlight in file.
+# TODO Manually remove individual highlight in file.
+# TODO fix robo-bug?
 
 # The current highlights. This is global across all ST instances/window/projects.
 # See Packages/User/HighlightToken/HighlightToken.store
@@ -221,7 +223,6 @@ class SbotScopeInfoCommand(sublime_plugin.TextCommand):
             scopes = scope.split()
             _render_scopes(scopes, self.view)
 
-
 #-----------------------------------------------------------------------------------
 class SbotCurrentHighlightsCommand(sublime_plugin.TextCommand):
     ''' Show style info for current highlights. '''
@@ -247,7 +248,10 @@ class SbotCurrentHighlightsCommand(sublime_plugin.TextCommand):
                 i = len(style_text)
                 style_text.append(f'.st{i} {props}')
                 token = tparams['token']
-                content.append(f'<p><span class=st{i}>HL {iind + 1}: [{token}]</span></p>')
+
+                safe_token = html.escape(token)
+
+                content.append(f'<p><span class=st{i}>HL {iind + 1}: [{safe_token}]</span></p>')
         else:
             content.append(f'<b>No Highlights</b>')
 
@@ -256,14 +260,14 @@ class SbotCurrentHighlightsCommand(sublime_plugin.TextCommand):
         ct = '\n'.join(content)
 
         # Html for popup.
-        html = f'''
+        shtml = f'''
     <body>
     <style> p {{ margin: 0em; }} {st} </style>
     {ct}
     </body>
     '''
 
-        self.view.show_popup(html, max_width=512, max_height=600)
+        self.view.show_popup(shtml, max_width=512, max_height=600)
 
 
 #-----------------------------------------------------------------------------------
